@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const serviceRoutes = require("./src/routers/service");
 const vendorRoutes = require("./src/routers/vendor");
+const reviewRoutes = require("./src/routers/review");
 
 const connectDB = require("./src/db/db");
 const limiter = rateLimit({
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/services", serviceRoutes);
 app.use("/api/vendors", vendorRoutes);
+app.use("api/reviews", reviewRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
