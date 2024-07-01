@@ -30,6 +30,4 @@ vendorSchema.pre("save", async function (next) {
   next();
 });
 
-const Vendor = mongoose.model("Vendor", vendorSchema);
-
-module.exports = Vendor;
+module.exports = mongoose.model("Vendor", vendorSchema);
