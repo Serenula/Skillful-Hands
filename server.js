@@ -29,9 +29,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/services", serviceRoutes);
 app.use("/api/vendors", vendorRoutes);
-app.use("/api/reviews", reviewRoutes);
+// app.use("/api/reviews", reviewRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`Server sarterd on${PORT}`);
+  console.log(`Server sarterd on ${PORT}`);
 });

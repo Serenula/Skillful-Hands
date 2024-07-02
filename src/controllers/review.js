@@ -1,6 +1,5 @@
 const Review = require("../model/Review");
 const Service = require("../model/Service");
-const User = require("../models/User"); //pending Xuimin
 
 const createReview = async (req, res) => {
   const { serviceId, userId, rating, comment } = req.body;
