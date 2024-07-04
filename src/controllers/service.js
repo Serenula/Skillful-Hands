@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Service = require("../model/Service");
 const Vendor = require("../model/Vendor");
 
@@ -53,7 +54,7 @@ const seedServices = async (req, res) => {
 
 const getAllServices = async (req, res) => {
   try {
-    const services = await Service.find().populate("provider", "username");
+    const services = await Service.find().populate("vendor", "username");
     res.json(services);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -106,9 +107,35 @@ const createService = async (req, res) => {
   }
 };
 
+const deleteService = async (req, res) => {
+  try {
+    const serviceId = req.params.id;
+    const vendorId = req.vendorId;
+    const service = await Service.findById(serviceId);
+
+    if (!mongoose.Types.ObjectId.isValid(serviceId)) {
+      return res
+        .status(404)
+        .json({ status: "error", msg: "Service not found" });
+    }
+
+    if (service.vendor.toString() !== vendorId.toString()) {
+      return res.status(403).json({ status: "error", msg: "Not authorized" });
+    }
+
+    await service.deleteOne();
+
+    res.status(200).json({ status: "ok", msg: "Service deleted" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ status: "error", msg: "Failed to delete service" });
+  }
+};
+
 module.exports = {
   seedServices,
   getAllServices,
   getServiceById,
   createService,
+  deleteService,
 };

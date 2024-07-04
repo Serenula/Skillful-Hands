@@ -94,7 +94,7 @@ const login = async (req, res) => {
       email: auth.email,
     };
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
-      expiresIn: "20m",
+      expiresIn: "1d",
       jwtid: uuidv4(),
     });
     const refresh = jwt.sign(claims, process.env.REFRESH_SECRET, {
