@@ -32,7 +32,7 @@ const fetchVendor = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
-    req.decoded = decoded; // Attach decoded token to request object
+    req.decoded = decoded;
 
     const vendor = await Vendor.findOne({ email: decoded.email });
 
@@ -40,7 +40,7 @@ const fetchVendor = async (req, res, next) => {
       return res.status(404).json({ status: "error", msg: "Vendor not found" });
     }
 
-    req.vendorId = vendor._id; // Attach vendor ID to request object
+    req.vendorId = vendor._id;
     next();
   } catch (error) {
     console.error("JWT verification error:", error.message);
