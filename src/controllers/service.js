@@ -77,20 +77,45 @@ const getServiceById = async (req, res) => {
 
 const createService = async (req, res) => {
   try {
-    const newService = {
-      title: req.body.title,
-      catergory: req.body.catergory,
-      description: req.body.description,
-      price: req.body.price,
-      availability: req.body.availability,
-    };
-    await Service.create(newService);
-    res.json({ status: "ok", msg: "service saved" });
+    const { title, description, price, availability } = req.body;
+
+    // Log decoded token for debugging
+    console.log("Decoded token:", req.decoded);
+
+    // Ensure correct token decoding and vendor ID extraction
+    const vendorId = req.decoded.vendorId;
+
+    // Find vendor by ID
+    const vendor = await Vendor.findById(vendorId);
+
+    if (!vendor) {
+      console.log("Vendor not found in database for ID:", vendorId);
+      return res.status(404).json({ status: "error", msg: "Vendor not found" });
+    }
+
+    // Create new service associated with the vendor
+    const newService = new Service({
+      title,
+      category: vendor.category,
+      description,
+      price,
+      vendor: vendor._id,
+      availability,
+    });
+
+    // Save the new service
+    const savedService = await newService.save();
+
+    // Respond with success message and created service data
+    res
+      .status(201)
+      .json({ status: "ok", msg: "Service created", service: savedService });
   } catch (error) {
-    console.error(error.message);
-    res.json({ status: "error", msg: "error saving service" });
+    console.error("Error creating service:", error.message);
+    res.status(500).json({ status: "error", msg: "Failed to create service" });
   }
 };
+
 module.exports = {
   seedServices,
   getAllServices,

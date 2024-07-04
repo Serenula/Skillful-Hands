@@ -11,6 +11,6 @@ const router = express.Router();
 router.post("/seed", seedServices);
 router.get("/", getAllServices);
 router.get("/:id", getServiceById);
-router.put("/create", authVendor, createService);
+router.post("/create", authVendor, createService);
 
 module.exports = router;
