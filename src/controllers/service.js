@@ -78,9 +78,11 @@ const getServiceById = async (req, res) => {
 const createService = async (req, res) => {
   try {
     const newService = {
-      service_name: req.body.title,
-      service_type: req.body.author,
-      service_price: req.body.year,
+      title: req.body.title,
+      catergory: req.body.catergory,
+      description: req.body.description,
+      price: req.body.price,
+      availability: req.body.availability,
     };
     await Service.create(newService);
     res.json({ status: "ok", msg: "service saved" });

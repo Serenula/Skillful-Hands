@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const serviceSchema = new mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
       required: true,
     },
@@ -18,15 +18,17 @@ const serviceSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    provider: {
+    vendor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vendor",
       required: true,
     },
-    availability: {
-      type: [Date],
-      required: true,
-    },
+    availability: [{ type: Date, required: true }],
+    // availability: {
+    //   type: Array,
+    //   default: [Date],
+    //   required: true,
+    // },
   },
   {
     timestamps: true,
