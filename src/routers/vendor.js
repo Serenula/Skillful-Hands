@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post("/seed", seedVendors);
 router.put("/register", register);
-router.pose("/login", login);
+router.post("/login", login);
 
 module.exports = router;

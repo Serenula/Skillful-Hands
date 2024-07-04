@@ -74,8 +74,24 @@ const getServiceById = async (req, res) => {
     res.stauts(500).json({ message: error.message });
   }
 };
+
+const createService = async (req, res) => {
+  try {
+    const newService = {
+      service_name: req.body.title,
+      service_type: req.body.author,
+      service_price: req.body.year,
+    };
+    await Service.create(newService);
+    res.json({ status: "ok", msg: "service saved" });
+  } catch (error) {
+    console.error(error.message);
+    res.json({ status: "error", msg: "error saving service" });
+  }
+};
 module.exports = {
   seedServices,
   getAllServices,
   getServiceById,
+  createService,
 };

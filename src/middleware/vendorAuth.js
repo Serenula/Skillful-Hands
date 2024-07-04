@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const auth = (req, res, next) => {
+const authVendor = (req, res, next) => {
   if (!("authorization" in req.headers)) {
     return res.status(400).json({ status: "error", msg: "token required" });
   }
@@ -45,4 +45,4 @@ const authAdmin = (req, res, next) => {
   }
 };
 
-module.exports = { auth, authAdmin };
+module.exports = { authVendor, authAdmin };
