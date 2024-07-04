@@ -1,6 +1,6 @@
 const express = require("express");
 const { seedVendors } = require("../controllers/vendor");
-const { register, login } = require("../controllers/vendorAuth");
+const { register, login } = require("../controllers/auth");
 const router = express.Router();
 
 router.post("/seed", seedVendors);
