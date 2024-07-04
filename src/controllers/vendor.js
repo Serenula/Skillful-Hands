@@ -82,7 +82,6 @@ const login = async (req, res) => {
     console.log("Provided password:", req.body.password);
     console.log("Type of provided password:", typeof req.body.password);
 
-    // Compare using the same salt rounds (12 in this case)
     const result = await bcrypt.compare(req.body.password, auth.password);
     console.log("Password comparison result:", result);
 

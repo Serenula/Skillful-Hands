@@ -5,12 +5,12 @@ const {
   seedServices,
   createService,
 } = require("../controllers/service");
-const { authVendor } = require("../middleware/vendorAuth");
+const { fetchVendor } = require("../middleware/vendorAuth");
 const router = express.Router();
 
 router.post("/seed", seedServices);
 router.get("/", getAllServices);
 router.get("/:id", getServiceById);
-router.post("/create", authVendor, createService);
+router.post("/create", fetchVendor, createService);
 
 module.exports = router;

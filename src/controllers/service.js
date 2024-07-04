@@ -78,14 +78,8 @@ const getServiceById = async (req, res) => {
 const createService = async (req, res) => {
   try {
     const { title, description, price, availability } = req.body;
+    const vendorId = req.vendorId;
 
-    // Log decoded token for debugging
-    console.log("Decoded token:", req.decoded);
-
-    // Ensure correct token decoding and vendor ID extraction
-    const vendorId = req.decoded.vendorId;
-
-    // Find vendor by ID
     const vendor = await Vendor.findById(vendorId);
 
     if (!vendor) {
@@ -93,7 +87,6 @@ const createService = async (req, res) => {
       return res.status(404).json({ status: "error", msg: "Vendor not found" });
     }
 
-    // Create new service associated with the vendor
     const newService = new Service({
       title,
       category: vendor.category,
@@ -103,10 +96,7 @@ const createService = async (req, res) => {
       availability,
     });
 
-    // Save the new service
     const savedService = await newService.save();
-
-    // Respond with success message and created service data
     res
       .status(201)
       .json({ status: "ok", msg: "Service created", service: savedService });
