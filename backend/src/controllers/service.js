@@ -21,7 +21,7 @@ const seedServices = async (req, res) => {
         category: "Cleaning",
         description: "House cleaning service",
         price: 50,
-        provider: vendors[0]._id,
+        vendor: vendors[0]._id,
         availability: [new Date("2024-07-01"), new Date("2024-07-02")],
       },
       {
@@ -30,7 +30,7 @@ const seedServices = async (req, res) => {
         category: "Aircon Services",
         description: "aircon cleaning service",
         price: 30,
-        provider: vendors[1]._id,
+        vendor: vendors[1]._id,
         availability: [new Date("2024-07-03"), new Date("2024-07-04")],
       },
       {
@@ -39,7 +39,7 @@ const seedServices = async (req, res) => {
         category: "Pet grooming",
         description: "Pet grooming service",
         price: 20,
-        provider: vendors[2]._id,
+        vendor: vendors[2]._id,
         availability: [new Date("2024-07-05"), new Date("2024-07-06")],
       },
     ]);
@@ -83,7 +83,7 @@ const createService = async (req, res) => {
       description: req.body.description,
       price: req.body.price,
       availability: req.body.availability,
-      provider: req.body.provider,
+      vendor: req.body.vendor,
     };
     await Service.create(newService);
     res.json({ status: "ok", msg: "Service saved" });

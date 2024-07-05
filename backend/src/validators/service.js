@@ -1,7 +1,7 @@
 const { body } = require("express-validator");
 
 const createServiceValidation = [
-  body("title", "Title is required").notEmpty().isString(),
+  body("name", "Name is required").notEmpty().isString(),
   body("category", "Category is required").notEmpty().isString(),
   body("description", "Description is required").notEmpty().isString(),
   body("price", "Price is required and must be a number")

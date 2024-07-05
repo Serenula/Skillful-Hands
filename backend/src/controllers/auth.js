@@ -1,5 +1,6 @@
 const Auth = require("../model/Auth");
 const bcrypt = require("bcrypt");
+const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
@@ -14,23 +15,48 @@ const getAllUsers = async (req, res) => {
 };
 
 const register = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ status: "error", errors: errors.array() });
+  }
+
   try {
-    const auth = await Auth.findOne({ email: req.body.email });
-    if (auth) {
-      return res.status(400).json({ status: "error", message: "email in use" });
+    const { username, email, password, role, address, category } = req.body;
+
+    const existingUser = await Auth.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Email already in use" });
     }
-    const hash = await bcrypt.hash(req.body.password, 12);
-    await Auth.create({
-      username: req.body.username,
-      email: req.body.email,
-      hash,
-      role: req.body.role,
-      address: req.body.address,
-    });
-    res.json({ status: "ok", message: "user registered" });
+
+    const hash = await bcrypt.hash(password, 12);
+
+    let newUser;
+    if (role === "user") {
+      newUser = await Auth.create({
+        username,
+        email,
+        hash,
+        role,
+        address,
+      });
+    } else if (role === "vendor") {
+      newUser = await Auth.create({
+        username,
+        email,
+        hash,
+        role,
+        category,
+      });
+    } else {
+      return res.status(400).json({ status: "error", message: "Invalid role" });
+    }
+
+    res.json({ status: "ok", message: "User registered successfully" });
   } catch (error) {
     console.error(error.message);
-    res.status(400).json({ status: "error", message: "invalid registration" });
+    res.status(400).json({ status: "error", message: "Invalid registration" });
   }
 };
 

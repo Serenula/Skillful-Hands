@@ -23,7 +23,9 @@ const AuthSchema = new mongoose.Schema(
     },
     address: {
       type: String,
-      required: true,
+      required: function () {
+        return this.role === "user";
+      },
     },
     category: {
       type: String,
