@@ -5,25 +5,26 @@ const {
   seedReviews,
   deleteReview,
 } = require("../controllers/review");
-const Auth = require("../model/Auth");
+
 const {
   createReviewValidation,
   deleteReviewValidation,
 } = require("../validators/review");
 const checkErrors = require("../validators/checkErrors");
+const { auth } = require("../middleware/auth");
 const router = express.Router();
 
-router.post("/", createReviewValidation, checkErrors, createReview);
-router.get("/:serviceId", getReviewByService);
+router.post("/create", createReviewValidation, checkErrors, createReview);
 router.post("/seed", seedReviews);
+router.get("/:serviceId", getReviewByService);
 router.delete(
-  "/delete/:id",
+  "/:reviewId",
   deleteReviewValidation,
   checkErrors,
-  Auth,
+  auth,
   (req, res, next) => {
     if (req.role !== "user") {
-      return res.status(401).json({ status: "error", msg: "not authorized" });
+      return res.status(401).json({ status: "error", msg: "Not authorized" });
     }
     next();
   },

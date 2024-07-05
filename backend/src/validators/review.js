@@ -1,4 +1,4 @@
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 
 const createReviewValidation = [
   body("serviceId", "Service ID is required").notEmpty().isString(),
@@ -10,7 +10,7 @@ const createReviewValidation = [
 ];
 
 const deleteReviewValidation = [
-  body("reviewId", "Review ID is required").notEmpty().isString(),
+  param("reviewId", "Review ID is required").notEmpty().isString(),
 ];
 
 module.exports = { createReviewValidation, deleteReviewValidation };

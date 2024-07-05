@@ -27,7 +27,7 @@ const seedServices = async (req, res) => {
       {
         _id: "60d5ec49c45e2a001c8d2e24",
         name: "Aircon man ",
-        category: "Aircon Services",
+        category: "Aircon Servicing",
         description: "aircon cleaning service",
         price: 30,
         vendor: vendors[1]._id,
@@ -36,7 +36,7 @@ const seedServices = async (req, res) => {
       {
         _id: "60d5ec49c45e2a001c8d2e25",
         name: "Pet Grooming",
-        category: "Pet grooming",
+        category: "Pet Grooming",
         description: "Pet grooming service",
         price: 20,
         vendor: vendors[2]._id,
@@ -53,7 +53,7 @@ const seedServices = async (req, res) => {
 
 const getAllServices = async (req, res) => {
   try {
-    const services = await Service.find().populate("provider", "username");
+    const services = await Service.find().populate("vendor", "username");
     res.json(services);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -63,7 +63,7 @@ const getAllServices = async (req, res) => {
 const getServiceById = async (req, res) => {
   try {
     const service = await Service.findById(req.params.id).populate(
-      "provider",
+      "vendor",
       "username"
     );
     if (!service) {
@@ -77,14 +77,16 @@ const getServiceById = async (req, res) => {
 
 const createService = async (req, res) => {
   try {
+    console.log("Request body:", req.body);
     const newService = {
       name: req.body.name,
       category: req.body.category,
       description: req.body.description,
       price: req.body.price,
       availability: req.body.availability,
-      vendor: req.body.vendor,
+      vendor: req.userVendorId,
     };
+    console.log("new", newService);
     await Service.create(newService);
     res.json({ status: "ok", msg: "Service saved" });
   } catch (error) {
@@ -93,9 +95,40 @@ const createService = async (req, res) => {
   }
 };
 
+const deleteService = async (req, res) => {
+  const { serviceId } = req.params;
+  const vendorId = req.userVendorId;
+
+  try {
+    const service = await Service.findById(serviceId);
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    console.log("Service vendor ID:", service.vendor.toString());
+    console.log("User vendor ID:", vendorId.toString());
+
+    if (service.vendor.toString() !== vendorId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this service" });
+    }
+
+    await Service.findByIdAndDelete(serviceId);
+    res.status(200).json({ message: "Service deleted successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(500)
+      .json({ message: "Error deleting service", error: error.message });
+  }
+};
+
 module.exports = {
   seedServices,
   getAllServices,
   getServiceById,
   createService,
+  deleteService,
 };

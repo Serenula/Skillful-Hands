@@ -28,6 +28,7 @@ const auth = async (req, res, next) => {
     if (decoded.role === "user" || decoded.role === "vendor") {
       req.userVendorId = userVendor._id;
       req.role = decoded.role;
+      console.log("User Vendor ID set:", req.userVendorId);
       next();
     } else {
       return res.status(401).json({ status: "error", msg: "Not authorized" });

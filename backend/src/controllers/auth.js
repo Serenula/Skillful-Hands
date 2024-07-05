@@ -1,6 +1,5 @@
 const Auth = require("../model/Auth");
 const bcrypt = require("bcrypt");
-const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
@@ -15,11 +14,6 @@ const getAllUsers = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ status: "error", errors: errors.array() });
-  }
-
   try {
     const { username, email, password, role, address, category } = req.body;
 
@@ -77,8 +71,15 @@ const login = async (req, res) => {
       username: auth.username,
       email: auth.email,
       role: auth.role,
-      address: auth.address,
     };
+
+    if (auth.role === "user") {
+      claims.address = auth.address;
+    }
+
+    if (auth.role === "vendor") {
+      claims.category = auth.category;
+    }
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
       expiresIn: "20m",
@@ -105,8 +106,15 @@ const refresh = async (req, res) => {
       username: decoded.username,
       email: decoded.email,
       role: decoded.role,
-      address: decoded.address,
     };
+
+    if (decoded.role === "user") {
+      claims.address = decoded.address;
+    }
+
+    if (decoded.role === "vendor") {
+      claims.category = decoded.category;
+    }
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
       expiresIn: "20m",

@@ -3,8 +3,7 @@ const Service = require("../model/Service");
 const Auth = require("../model/Auth");
 
 const createReview = async (req, res) => {
-  const { serviceId, rating, comment } = req.body;
-  const userId = req.userVendorId;
+  const { serviceId, userId, rating, comment } = req.body;
 
   try {
     const service = await Service.findById(serviceId);
@@ -94,11 +93,18 @@ const deleteReview = async (req, res) => {
   const userId = req.userVendorId;
 
   try {
+    console.log("User Vendor ID:", userId);
+
     const review = await Review.findById(reviewId);
+    console.log("Review:", review);
+
     if (!review) {
       return res.status(404).json({ message: "Review not found" });
     }
-    if (review.user.toString() !== userId) {
+
+    console.log("Review user ID:", review.user);
+
+    if (review.user.toString() !== userId.toString()) {
       return res
         .status(403)
         .json({ message: "You are not authorized to delete this review" });
@@ -108,7 +114,10 @@ const deleteReview = async (req, res) => {
 
     res.status(200).json({ message: "Review deleted successfully" });
   } catch (error) {
-    res.stauts(500).json({ message: "Error deleting review", error: message });
+    console.error("Error deleting review:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error deleting review", error: error.message });
   }
 };
 
