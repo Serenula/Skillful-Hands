@@ -1,31 +1,43 @@
-import React, { useState } from "react";
-import useFetch from "../hooks/useFetch";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import useFetch from "../hooks/useFetch";
 
-const FetchServices = () => {
+const ServicePage = () => {
   const fetchData = useFetch();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredSvc, setFilteredSvc] = useState([]);
+  const [services, setServices] = useState([]);
+  const [filteredServices, setFilteredServices] = useState([]);
 
-  const {
-    data: services,
-    error,
-    isLoading,
-  } = useQuery({
+  const fetchServices = async () => {
+    const response = await fetchData("/api/services", "GET");
+    return response;
+  };
+
+  const { data, error, isLoading } = useQuery({
     queryKey: ["services"],
-    queryFn: async () => {
-      const response = await fetchData("/api/services");
-      return response;
+    queryFn: fetchServices,
+    onSuccess: (data) => {
+      setServices(data);
+      setFilteredServices(data);
     },
   });
 
-  const handleSearch = () => {
-    if (services) {
-      const filtered = services.filtered((service) =>
-        service.title.toLowerCase().includes(searchTerm.toLowerCase)
-      );
-      setFilteredSvc(filtered);
+  useEffect(() => {
+    if (data) {
+      setServices(data);
+      setFilteredServices(data);
     }
+  }, [data]);
+
+  const handleSearch = () => {
+    const filtered = services.filter((service) =>
+      service.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredServices(filtered);
+  };
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -38,17 +50,17 @@ const FetchServices = () => {
         <input
           type="text"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Search for services"
         />
         <button onClick={handleSearch}>Search</button>
       </div>
       <ul>
-        {services.map((service) => (
+        {filteredServices.map((service) => (
           <li key={service._id}>
             <h3>{service.title}</h3>
             <p>{service.description}</p>
-            <p>Price:${service.price}</p>
+            <p>Price: ${service.price}</p>
           </li>
         ))}
       </ul>
@@ -56,4 +68,4 @@ const FetchServices = () => {
   );
 };
 
-export default FetchServices;
+export default ServicePage;
