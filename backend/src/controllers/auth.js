@@ -1,12 +1,11 @@
-const authModel = require("../model/Auth");
+const Auth = require("../model/Auth");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
-//this is all users including users and vendors
 const getAllUsers = async (req, res) => {
   try {
-    const users = await authModel.find().select("username email role address");
+    const users = await Auth.find().select("username email role address");
     res.json(users);
   } catch (error) {
     console.error(error.message);
@@ -16,12 +15,12 @@ const getAllUsers = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const auth = await authModel.findOne({ email: req.body.email });
+    const auth = await Auth.findOne({ email: req.body.email });
     if (auth) {
       return res.status(400).json({ status: "error", message: "email in use" });
     }
     const hash = await bcrypt.hash(req.body.password, 12);
-    await authModel.create({
+    await Auth.create({
       username: req.body.username,
       email: req.body.email,
       hash,
@@ -37,7 +36,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const auth = await authModel.findOne({ email: req.body.email });
+    const auth = await Auth.findOne({ email: req.body.email });
     if (!auth) {
       return res
         .status(401)
