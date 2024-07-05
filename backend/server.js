@@ -4,6 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const serviceRoutes = require("./src/routers/service");
+const vendorRoutes = require("./src/routers/vendor");
+const reviewRoutes = require("./src/routers/review");
+const auth = require("./src/routers/auth");
 
 const connectDB = require("./src/db/db");
 const limiter = rateLimit({
@@ -23,7 +27,13 @@ app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //router starts here
+
+app.use("/api/services", serviceRoutes);
+app.use("/api/vendors", vendorRoutes);
+app.use("/api/auth", auth);
+// app.use("/api/reviews", reviewRoutes);
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`Server sarterd on${PORT}`);
+  console.log(`Server sarterd on ${PORT}`);
 });
