@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
+import styles from "./ServicePage.module.css";
 
 const ServicePage = () => {
   const fetchData = useFetch();
@@ -45,25 +46,47 @@ const ServicePage = () => {
 
   return (
     <div>
-      <h1>Services</h1>
-      <div>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="Search for services"
-        />
-        <button onClick={handleSearch}>Search</button>
+      <nav className={styles.navbar}>
+        <div className={styles.logoLink}>
+          <img src="Skilfull Hands.png" alt="Logo" className={styles.logo} />
+        </div>
+        <div className={styles.navLinks}>
+          <a href="/profile" className={styles.link}>
+            Profile
+          </a>
+          <a href="/logout" className={styles.link}>
+            Log out
+          </a>
+        </div>
+      </nav>
+      <div className={styles.hero}>
+        <img src="heroimage.jpg" alt="Hero" className={styles.heroImage} />
+        <div className={styles.searchBox}>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleInputChange}
+            placeholder="Search for services..."
+            className={styles.searchInput}
+          />
+          <button className={styles.searchButton} onClick={handleSearch}>
+            Search
+          </button>
+        </div>
       </div>
-      <ul>
+      <div className={styles.serviceContainer}>
         {filteredServices.map((service) => (
-          <li key={service._id}>
-            <h3>{service.title}</h3>
-            <p>{service.description}</p>
-            <p>Price: ${service.price}</p>
-          </li>
+          <div key={service._id} className={styles.serviceBox}>
+            <h3 className={styles.serviceTitle}>{service.title}</h3>
+            <p className={styles.serviceDescription}>{service.description}</p>
+            <p className={styles.servicePrice}>Price: ${service.price}</p>
+            {/* link to dedicated service page */}
+            <a href={`/service/${service._id}`} className={styles.serviceLink}>
+              View Details
+            </a>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
