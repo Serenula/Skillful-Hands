@@ -1,12 +1,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  NavLink,
-} from "react-router-dom";
-import ServicePage from "./components/ServicePage";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ServicePage from "./components/servicePage";
 import VendorProfile from "./components/VendorProfile";
 import Homepage from "./components/Homepage";
 

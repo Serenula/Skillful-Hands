@@ -6,6 +6,7 @@ const RegisterModal = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [category, setCategory] = useState("");
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -61,6 +62,24 @@ const RegisterModal = ({ onClose }) => {
               <option value="vendor">Vendor</option>
             </select>
           </div>
+          {role === "vendor" && (
+            <div className={styles.formGroup}>
+              <label htmlFor="category">Category:</label>
+              <select
+                id="category"
+                name="category"
+                required
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value=""> Select service category</option>
+                <option value="Cleaning">Cleaning</option>
+                <option value="Aircon Servicing">Aircon Servicing</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Pet Grooming">Pet Grooming</option>
+                <option value="Personal Training">Personal Training</option>
+              </select>
+            </div>
+          )}
           <div className={styles.buttonContainer}>
             <button type="subit">Register</button>
           </div>
