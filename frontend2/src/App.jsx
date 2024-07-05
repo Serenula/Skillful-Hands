@@ -17,7 +17,6 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Auth
-        accessToken={accessToken}
         setAccessToken={setAccessToken}
         setRole={setRole}
         handleToken={handleToken}

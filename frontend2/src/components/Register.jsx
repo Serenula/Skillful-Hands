@@ -24,7 +24,7 @@ const Register = (props) => {
         },
         undefined
       ),
-    onSuccess: () => props.setShowLogin(true),
+    onSuccess: () => props.handleShowLogin(true),
   });
 
   return (
@@ -67,7 +67,7 @@ const Register = (props) => {
 
         <div>
           <button onClick={mutation.mutate}>Register</button>
-          <button onClick={() => props.setShowLogin(true)}>Cancel</button>
+          <button onClick={() => props.handleShowLogin(true)}>Cancel</button>
         </div>
       </div>
     </>

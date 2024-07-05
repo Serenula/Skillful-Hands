@@ -32,8 +32,6 @@ const Login = (props) => {
     }
   }, [data]);
 
-  // console.log(data);
-
   return (
     <>
       <h2> Login </h2>
@@ -50,6 +48,9 @@ const Login = (props) => {
       </div>
       <div>
         <button onClick={refetch}>Login</button>
+        <button onClick={() => props.handleShowLogin(false)}>
+          Register an account
+        </button>
       </div>
     </>
   );

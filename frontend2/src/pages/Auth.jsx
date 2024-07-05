@@ -4,19 +4,24 @@ import Register from "../components/Register";
 
 const Auth = (props) => {
   const [showLogin, setShowLogin] = useState(true);
-  // const [showRegister, setShowRegister] = useState(!showLogin);
-  const [showRegister, setShowRegister] = useState(true);
+  const [showRegister, setShowRegister] = useState(false);
+
+  const handleShowLogin = (result) => {
+    setShowLogin(result);
+    setShowRegister(!result);
+  };
   return (
     <>
       {showLogin && (
         <Login
-          accessToken={props.accessToken}
           setAccessToken={props.setAccessToken}
           setRole={props.setRole}
           handleToken={props.handleToken}
+          setShowLogin={props.setShowLogin}
+          handleShowLogin={handleShowLogin}
         />
       )}
-      {showRegister && <Register setShowLogin={setShowLogin} />}
+      {showRegister && <Register handleShowLogin={handleShowLogin} />}
     </>
   );
 };
