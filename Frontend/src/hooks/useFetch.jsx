@@ -1,28 +1,25 @@
-import { useState, useEffect } from "react";
+import React from "react";
 
-const useFetch = (url, options) => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const useFetch = () => {
+  const fetchData = async (endpoint, method, body, token) => {
+    const res = await fetch(import.meta.env.VITE_SERVER + endpoint, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify(body),
+    });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url, options);
-        const jsonData = await response.json();
+    if (!res.ok) {
+      throw new Error("database error");
+    }
 
-        setData(jsonData);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
+    const resData = await res.json();
+    return resData;
+  };
 
-    fetchData();
-  }, [url, options]);
-
-  return { data, loading, error };
+  return fetchData;
 };
 
 export default useFetch;
