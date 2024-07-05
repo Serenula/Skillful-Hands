@@ -1,11 +1,11 @@
 const Service = require("../model/Service");
-const Vendor = require("../model/Vendor");
+const Auth = require("../model/Auth");
 
 const seedServices = async (req, res) => {
   await Service.deleteMany({});
 
   try {
-    const vendors = await Vendor.find();
+    const vendors = await Auth.find({ role: "vendor" });
 
     if (vendors.length === 0) {
       return res.status(400).json({
@@ -21,7 +21,7 @@ const seedServices = async (req, res) => {
         category: "Cleaning",
         description: "House cleaning service",
         price: 50,
-        provider: vendors[0]._id, // Assign the first vendor
+        provider: vendors[0]._id,
         availability: [new Date("2024-07-01"), new Date("2024-07-02")],
       },
       {
@@ -30,7 +30,7 @@ const seedServices = async (req, res) => {
         category: "Cleaning",
         description: "Car cleaning service",
         price: 30,
-        provider: vendors[1]._id, // Assign the second vendor
+        provider: vendors[1]._id,
         availability: [new Date("2024-07-03"), new Date("2024-07-04")],
       },
       {
@@ -39,7 +39,7 @@ const seedServices = async (req, res) => {
         category: "Pet Sitting",
         description: "Pet sitting service",
         price: 20,
-        provider: vendors[2]._id, // Assign the third vendor
+        provider: vendors[2]._id,
         availability: [new Date("2024-07-05"), new Date("2024-07-06")],
       },
     ]);
@@ -69,28 +69,30 @@ const getServiceById = async (req, res) => {
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
-    res.jeson(service);
+    res.json(service);
   } catch (error) {
-    res.stauts(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
 const createService = async (req, res) => {
   try {
     const newService = {
-      title: req.body.title,
-      catergory: req.body.catergory,
+      name: req.body.name,
+      category: req.body.category,
       description: req.body.description,
       price: req.body.price,
       availability: req.body.availability,
+      provider: req.body.provider,
     };
     await Service.create(newService);
-    res.json({ status: "ok", msg: "service saved" });
+    res.json({ status: "ok", msg: "Service saved" });
   } catch (error) {
     console.error(error.message);
-    res.json({ status: "error", msg: "error saving service" });
+    res.json({ status: "error", msg: "Error saving service" });
   }
 };
+
 module.exports = {
   seedServices,
   getAllServices,
