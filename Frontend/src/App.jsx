@@ -9,7 +9,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ServicePage value={{ accessToken, setAccessToken }}></ServicePage>
+      <ServicePage />
     </QueryClientProvider>
   );
 }
