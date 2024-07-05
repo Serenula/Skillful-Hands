@@ -7,9 +7,11 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [role, setRole] = useState("");
 
-  const handleToken = (newToken) => {
+  const handleToken = (newToken, role) => {
     console.log(newToken);
+    console.log(role);
     setAccessToken(newToken);
+    setRole(role);
   };
 
   return (

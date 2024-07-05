@@ -7,7 +7,7 @@ const authUser = (req, res, next) => {
   const token = req.headers["authorization"].replace("Bearer ", "");
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+      const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
       if (decoded.role === "user") {
         req.decoded = decoded;
         next();
@@ -30,7 +30,7 @@ const authVendor = (req, res, next) => {
   const token = req.headers["authorization"].replace("Bearer ", "");
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+      const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
       if (decoded.role === "vendor") {
         req.decoded = decoded;
         next();
