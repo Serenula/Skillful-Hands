@@ -5,7 +5,7 @@ const {
   seedServices,
   createService,
 } = require("../controllers/service");
-const { authVendor } = require("../middleware/vendorAuth");
+const { authVendor } = require("../middleware/auth");
 const router = express.Router();
 
 router.post("/seed", seedServices);
