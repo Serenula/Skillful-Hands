@@ -1,10 +1,10 @@
-const Auth = require("../model/Auth");
+const { Auth, User, Vendor } = require("../model/Auth");
 const bcrypt = require("bcrypt");
-const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
-const getAllUsers = async (req, res) => {
+//for both users and vendors
+const getAll = async (req, res) => {
   try {
     const users = await Auth.find().select("username email role address");
     res.json(users);
@@ -15,11 +15,6 @@ const getAllUsers = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ status: "error", errors: errors.array() });
-  }
-
   try {
     const { username, email, password, role, address, category } = req.body;
 
@@ -34,7 +29,7 @@ const register = async (req, res) => {
 
     let newUser;
     if (role === "user") {
-      newUser = await Auth.create({
+      newUser = await User.create({
         username,
         email,
         hash,
@@ -42,7 +37,7 @@ const register = async (req, res) => {
         address,
       });
     } else if (role === "vendor") {
-      newUser = await Auth.create({
+      newUser = await Vendor.create({
         username,
         email,
         hash,
@@ -77,8 +72,15 @@ const login = async (req, res) => {
       username: auth.username,
       email: auth.email,
       role: auth.role,
-      address: auth.address,
     };
+
+    if (auth.role === "user") {
+      claims.address = auth.address;
+    }
+
+    if (auth.role === "vendor") {
+      claims.category = auth.category;
+    }
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
       expiresIn: "20m",
@@ -105,9 +107,15 @@ const refresh = async (req, res) => {
       username: decoded.username,
       email: decoded.email,
       role: decoded.role,
-      address: decoded.address,
     };
 
+    if (decoded.role === "user") {
+      claims.address = decoded.address;
+    }
+
+    if (decoded.role === "vendor") {
+      claims.category = decoded.category;
+    }
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
       expiresIn: "20m",
       jwtid: uuidv4(),
@@ -120,4 +128,4 @@ const refresh = async (req, res) => {
   }
 };
 
-module.exports = { register, login, refresh, getAllUsers };
+module.exports = { register, login, refresh, getAll };
