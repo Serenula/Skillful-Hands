@@ -5,11 +5,15 @@ const {
   seedUsers,
   createBooking,
   deleteBooking,
+  getUserById,
+  changeUserInfo,
 } = require("../controllers/users");
 
+router.get("/:id", getUserById);
 router.get("/all", getAllUsers);
 router.get("/seed", seedUsers);
 router.put("/booking/:id", createBooking);
 router.delete("/booking/:id", deleteBooking);
+router.patch("/:id", changeUserInfo);
 
 module.exports = router;

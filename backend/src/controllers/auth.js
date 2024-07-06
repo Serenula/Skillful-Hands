@@ -72,6 +72,7 @@ const login = async (req, res) => {
       username: auth.username,
       email: auth.email,
       role: auth.role,
+      id: auth._id,
     };
 
     if (auth.role === "user") {

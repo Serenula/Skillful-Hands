@@ -30,6 +30,34 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate("bookings").exec();
+    res.json(user);
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "error getting user details" });
+  }
+};
+
+const changeUserInfo = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, {
+      username: req.body.username,
+      email: req.body.email,
+      role: req.body.role,
+      address: req.body.address,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "error changing user details" });
+  }
+};
+
 const createBooking = async (req, res) => {
   try {
     const booking = await Bookings.create({
@@ -76,6 +104,8 @@ const deleteBooking = async (req, res) => {
 module.exports = {
   getAllUsers,
   seedUsers,
+  getUserById,
   createBooking,
   deleteBooking,
+  changeUserInfo,
 };
