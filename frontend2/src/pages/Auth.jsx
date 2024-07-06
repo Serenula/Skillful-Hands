@@ -16,6 +16,7 @@ const Auth = (props) => {
         <Login
           setAccessToken={props.setAccessToken}
           setRole={props.setRole}
+          setId={props.setId}
           handleToken={props.handleToken}
           setShowLogin={props.setShowLogin}
           handleShowLogin={handleShowLogin}

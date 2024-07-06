@@ -28,7 +28,9 @@ const Login = (props) => {
   useEffect(() => {
     if (data) {
       const decoded = jwtDecode(data.access);
-      props.handleToken(data.access, decoded.role);
+      console.log(data);
+      console.log(decoded);
+      props.handleToken(data.access, decoded.role, decoded.id);
     }
   }, [data]);
 
