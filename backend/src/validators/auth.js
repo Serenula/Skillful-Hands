@@ -5,7 +5,7 @@ const validateRegistration = [
   body("email", "email is required").notEmpty().isString(),
   body("password", "password is required").notEmpty().isString(),
   body("role", "role is required").notEmpty().isString(),
-  body("address", "address is required").notEmpty().isString(),
+  // body("address", "address is required").notEmpty().isString(),
 ];
 
 const validateLogin = [

@@ -2,13 +2,20 @@ const mongoose = require("mongoose");
 
 const serviceSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
     },
     category: {
       type: String,
       required: true,
+      enum: [
+        "Cleaning",
+        "Aircon Servicing",
+        "Plumbing",
+        "Pet Grooming",
+        "Personal Training",
+      ],
     },
     description: {
       type: String,
@@ -20,15 +27,10 @@ const serviceSchema = new mongoose.Schema(
     },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Vendor",
+      ref: "Auth",
       required: true,
     },
     availability: [{ type: Date, required: true }],
-    // availability: {
-    //   type: Array,
-    //   default: [Date],
-    //   required: true,
-    // },
   },
   {
     timestamps: true,

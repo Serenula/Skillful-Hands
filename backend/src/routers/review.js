@@ -1,13 +1,34 @@
-// const express = require("express");
-// const {
-//   createReview,
-//   getReviewByService,
-//   seedReviews,
-// } = require("../controllers/review");
-// const router = express.Router;
+const express = require("express");
+const {
+  createReview,
+  getReviewByService,
+  seedReviews,
+  deleteReview,
+} = require("../controllers/review");
 
-// // router.post("/", createReview);
-// router.get("/:serviceId", getReviewByService);
-// router.post("/seed", seedReviews);
+const {
+  createReviewValidation,
+  deleteReviewValidation,
+} = require("../validators/review");
+const checkErrors = require("../validators/checkErrors");
+const { auth } = require("../middleware/auth");
+const router = express.Router();
 
-// module.exports = router;
+router.post("/create", createReviewValidation, checkErrors, createReview);
+router.post("/seed", seedReviews);
+router.get("/:serviceId", getReviewByService);
+router.delete(
+  "/:reviewId",
+  deleteReviewValidation,
+  checkErrors,
+  auth,
+  (req, res, next) => {
+    if (req.role !== "user") {
+      return res.status(401).json({ status: "error", msg: "Not authorized" });
+    }
+    next();
+  },
+  deleteReview
+);
+
+module.exports = router;

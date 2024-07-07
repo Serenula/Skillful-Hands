@@ -1,9 +1,10 @@
 const Review = require("../model/Review");
 const Service = require("../model/Service");
-// const User = require("../model/User");
+const Auth = require("../model/Auth");
 
 const createReview = async (req, res) => {
   const { serviceId, userId, rating, comment } = req.body;
+
   try {
     const service = await Service.findById(serviceId);
     if (!service) {
@@ -48,9 +49,9 @@ const seedReviews = async (req, res) => {
 
   try {
     const services = await Service.find();
-    const users = await User.find();
+    const users = await Auth.find({ role: "user" });
 
-    if (services.length === 0 || user.length === 0) {
+    if (services.length === 0 || users.length === 0) {
       return res
         .status(400)
         .json({ message: "No services or users. Please seed first" });
@@ -86,4 +87,43 @@ const seedReviews = async (req, res) => {
       .json({ message: "Error seeding reviews", error: error.message });
   }
 };
-module.exports = { createReview, getReviewByService, seedReviews };
+
+const deleteReview = async (req, res) => {
+  const { reviewId } = req.params;
+  const userId = req.userVendorId;
+
+  try {
+    console.log("User Vendor ID:", userId);
+
+    const review = await Review.findById(reviewId);
+    console.log("Review:", review);
+
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    console.log("Review user ID:", review.user);
+
+    if (review.user.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this review" });
+    }
+
+    await Review.findByIdAndDelete(reviewId);
+
+    res.status(200).json({ message: "Review deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting review:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error deleting review", error: error.message });
+  }
+};
+
+module.exports = {
+  createReview,
+  getReviewByService,
+  seedReviews,
+  deleteReview,
+};
