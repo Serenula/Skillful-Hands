@@ -9,7 +9,7 @@ function App() {
   const [role, setRole] = useState("");
   const [userId, setUserId] = useState("");
 
-  const handleToken = (newToken, role, userId) => {
+  const handleToken = (newToken, role, userId, email) => {
     console.log(newToken);
     console.log(role);
     console.log(userId);

@@ -9,3 +9,10 @@
   font-size: 2em;
   font-weight: 600;
 }
+
+.cancelCard {
+  background-color: white;
+  margin: 1em;
+  border-radius: 1em;
+  padding: 1em;
+}

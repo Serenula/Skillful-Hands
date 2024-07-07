@@ -30,7 +30,7 @@ const Login = (props) => {
       const decoded = jwtDecode(data.access);
       console.log(data);
       console.log(decoded);
-      props.handleToken(data.access, decoded.role, decoded.id);
+      props.handleToken(data.access, decoded.role, decoded.id, decoded.email);
     }
   }, [data]);
 

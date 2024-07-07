@@ -8,6 +8,7 @@ const User = (props) => {
   const userDetails = useFetch();
   const queryClient = useQueryClient();
   const [updateInfo, setUpdateInfo] = useState(false);
+  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [bookings, setBookings] = useState([]);
@@ -34,6 +35,7 @@ const User = (props) => {
       setUsername(data.username);
       setAddress(data.address);
       setBookings(data.bookings);
+      setEmail(data.email);
       console.log(props.accessToken);
       console.log(props.userId);
     }
@@ -51,6 +53,7 @@ const User = (props) => {
         {
           address,
           username,
+          email,
         },
         props.accessToken
       );
@@ -121,7 +124,13 @@ const User = (props) => {
                   </div>
                   <div>
                     <label>Email</label>
-                    <div>{data.email}</div>
+                    <div>
+                      <input
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                      ></input>
+                    </div>
+                    {/* <div>{data.email}</div> */}
                   </div>
                   <div>
                     <label>Address</label>
