@@ -48,9 +48,9 @@ const changeUserInfo = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.params.id, {
       username: req.body.username,
       email: req.body.email,
-      role: req.body.role,
       address: req.body.address,
     });
+    res.json({ status: "ok", message: "user info changed" });
   } catch (error) {
     console.error(error.message);
     res
