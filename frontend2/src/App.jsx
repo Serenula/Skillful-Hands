@@ -7,15 +7,15 @@ const queryClient = new QueryClient();
 function App() {
   const [accessToken, setAccessToken] = useState("");
   const [role, setRole] = useState("");
-  const [id, setId] = useState("");
+  const [userId, setUserId] = useState("");
 
-  const handleToken = (newToken, role, id) => {
+  const handleToken = (newToken, role, userId) => {
     console.log(newToken);
     console.log(role);
-    console.log(id);
+    console.log(userId);
     setAccessToken(newToken);
     setRole(role);
-    setId(id);
+    setUserId(userId);
   };
 
   return (
@@ -24,12 +24,12 @@ function App() {
         <Auth
           setAccessToken={setAccessToken}
           setRole={setRole}
-          setId={setId}
+          setUserId={setUserId}
           handleToken={handleToken}
         />
       )}
       {role === "user" && accessToken && (
-        <User id={id} accessToken={accessToken} />
+        <User userId={userId} accessToken={accessToken} />
       )}
     </QueryClientProvider>
   );

@@ -48,3 +48,10 @@ button {
 label {
   font-weight: 700;
 }
+
+.info {
+  background-color: white;
+  margin: 1em;
+  padding: 1em;
+  border-radius: 1em;
+}

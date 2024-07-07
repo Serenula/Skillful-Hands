@@ -23,6 +23,7 @@ const seedUsers = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const allUsers = await User.find();
+    console.log(allUsers);
     res.json(allUsers);
   } catch (error) {
     console.error(error.message);
@@ -86,9 +87,9 @@ const createBooking = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
   try {
-    await Bookings.findByIdAndDelete(req.body.id);
-    const user = await User.findById(req.params.id);
-    user.bookings.pull({ _id: req.body.id });
+    await Bookings.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.body.id);
+    user.bookings.pull({ _id: req.params.id });
     await user.save();
 
     console.log(user);

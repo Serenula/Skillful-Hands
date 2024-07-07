@@ -9,8 +9,8 @@ const {
   changeUserInfo,
 } = require("../controllers/users");
 
+router.get("/users/all", getAllUsers);
 router.get("/:id", getUserById);
-router.get("/all", getAllUsers);
 router.get("/seed", seedUsers);
 router.put("/booking/:id", createBooking);
 router.delete("/booking/:id", deleteBooking);

@@ -6,8 +6,8 @@ import BookingCard from "../components/BookingCard";
 
 const User = (props) => {
   const userDetails = useFetch();
-  const [updateInfo, setUpdateInfo] = useState(false);
   const queryClient = useQueryClient();
+  const [updateInfo, setUpdateInfo] = useState(false);
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [bookings, setBookings] = useState([]);
@@ -16,8 +16,9 @@ const User = (props) => {
   const { data, isSuccess, isFetching } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
+      console.log("fetching data");
       return await userDetails(
-        "/api/users/" + props.id,
+        "/api/users/" + props.userId,
         undefined,
         undefined,
         props.accessToken
@@ -27,24 +28,37 @@ const User = (props) => {
 
   //render the user info when data is fetched.
   useEffect(() => {
+    console.log("no data yet");
     if (data) {
+      console.log("have data - reset states");
       setUsername(data.username);
       setAddress(data.address);
       setBookings(data.bookings);
+      console.log(props.accessToken);
+      console.log(props.userId);
     }
   }, [data]);
 
   //making changes to user's info
   const { mutate } = useMutation({
     mutationFn: async () => {
-      return await userDetails("/api/users/" + props.id, "PATCH", {
-        address,
-        username,
-      });
+      console.log(address);
+      console.log(username);
+      console.log("sending request to change data");
+      return await userDetails(
+        "/api/users/" + props.userId,
+        "PATCH",
+        {
+          address,
+          username,
+        },
+        props.accessToken
+      );
     },
     onSuccess: () => {
+      console.log("successful sending change request");
       queryClient.invalidateQueries(["user"]);
-      alert("changes successful");
+      console.log("data should be changed");
     },
   });
 
@@ -75,7 +89,13 @@ const User = (props) => {
                 </div>
                 <div className={styles.list}>
                   {bookings.map((booking) => (
-                    <BookingCard booking={booking} />
+                    <BookingCard
+                      booking={booking}
+                      key={booking._id}
+                      bookingId={booking._id}
+                      accessToken={props.accessToken}
+                      userId={props.userId}
+                    />
                   ))}
                 </div>
               </div>
@@ -89,42 +109,42 @@ const User = (props) => {
                 <div className={styles.info}>
                   <label>User Id</label>
                   <div>{data._id}</div>
-                </div>
-                <div>
-                  <label>Username</label>
                   <div>
-                    <input
-                      onChange={(e) => setUsername(e.target.value)}
-                      value={username}
-                    ></input>
+                    <label>Username</label>
+                    <div>
+                      <input
+                        onChange={(e) => setUsername(e.target.value)}
+                        value={username}
+                      ></input>
+                    </div>
+                    {/* <div>{data.username}</div> */}
                   </div>
-                  {/* <div>{data.username}</div> */}
-                </div>
-                <div>
-                  <label>Email</label>
-                  <div>{data.email}</div>
-                </div>
-                <div>
-                  <label>Address</label>
                   <div>
-                    <input
-                      onChange={(e) => setAddress(e.target.value)}
-                      value={address}
-                    ></input>
+                    <label>Email</label>
+                    <div>{data.email}</div>
                   </div>
-                  {/* <div>{data.address}</div> */}
-                </div>
-                <div>
-                  <button onClick={mutate}>Save</button>
-                  <button
-                    onClick={() => {
-                      setUpdateInfo(!updateInfo);
-                      setUsername(data.username);
-                      setAddress(data.address);
-                    }}
-                  >
-                    Cancel
-                  </button>
+                  <div>
+                    <label>Address</label>
+                    <div>
+                      <input
+                        onChange={(e) => setAddress(e.target.value)}
+                        value={address}
+                      ></input>
+                    </div>
+                    {/* <div>{data.address}</div> */}
+                  </div>
+                  <div>
+                    <button onClick={mutate}>Save</button>
+                    <button
+                      onClick={() => {
+                        setUpdateInfo(!updateInfo);
+                        setUsername(data.username);
+                        setAddress(data.address);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
