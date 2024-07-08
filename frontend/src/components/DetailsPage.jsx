@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { useQuery } from "@tanstack/react-query";
 import style2 from "./DetailsPage.module.css";
-import style1 from "./ServicePage.module.css";
 import Booking from "./Booking";
+import NavBar from "./NavBar";
 
 const DetailsPage = () => {
   const fetchData = useFetch();
@@ -22,19 +22,7 @@ const DetailsPage = () => {
 
   return (
     <div className={style2.page}>
-      <nav className={style1.navbar}>
-        <div className={style1.logoLink}>
-          <img src="/Skilfull Hands.png" alt="Logo" className={style1.logo} />
-        </div>
-        <div className={style1.navLinks}>
-          <a href="/profile" className={style1.link}>
-            Profile
-          </a>
-          <a href="/" className={style1.link}>
-            Log out
-          </a>
-        </div>
-      </nav>
+      <NavBar />
 
       {isSuccess && (
         <>

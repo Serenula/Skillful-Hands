@@ -1,36 +1,36 @@
-const Auth = require("../model/Auth");
+const { Vendor } = require("../model/Auth");
 const bcrypt = require("bcrypt");
 
 const seedVendors = async (req, res) => {
-  await Auth.deleteMany({ role: "vendor" });
+  await Vendor.deleteMany({});
 
   try {
-    await Auth.create([
+    await Vendor.create([
       {
-        _id: "60d5ec49c45e2a001c8d2e21",
-        username: "vendor1",
-        email: "vendor1@example.com",
+        _id: "60d5ec49c45e2a001c8d2e26",
+        username: "vendor4",
+        email: "vendor4@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 1",
+        address: "Vendor Address 4",
         category: "Cleaning",
       },
       {
-        _id: "60d5ec49c45e2a001c8d2e22",
-        username: "vendor2",
-        email: "vendor2@example.com",
+        _id: "60d5ec49c45e2a001c8d2e25",
+        username: "vendor5",
+        email: "vendor5@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 2",
+        address: "Vendor Address 5",
         category: "Aircon Servicing",
       },
       {
-        _id: "60d5ec49c45e2a001c8d2e23",
-        username: "vendor3",
-        email: "vendor3@example.com",
+        _id: "60d5ec49c45e2a001c8d2e24",
+        username: "vendor6",
+        email: "vendor6@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 3",
+        address: "Vendor Address 6",
         category: "Plumbing",
       },
     ]);

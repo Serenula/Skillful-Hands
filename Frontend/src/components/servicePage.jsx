@@ -3,9 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import styles from "./ServicePage.module.css";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const ServicePage = () => {
   const fetchData = useFetch();
+  const token = localStorage.getItem("accessToken");
+  const decodedToken = jwtDecode(token); // Decode token once
+  const userId = decodedToken.id;
   const [searchTerm, setSearchTerm] = useState("");
   const [services, setServices] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
@@ -52,9 +56,9 @@ const ServicePage = () => {
           <img src="Skilfull Hands.png" alt="Logo" className={styles.logo} />
         </div>
         <div className={styles.navLinks}>
-          <a href="/profile" className={styles.link}>
+          <Link to={`/users/${userId}`} className={styles.link}>
             Profile
-          </a>
+          </Link>
           <a href="/" className={styles.link}>
             Log out
           </a>
