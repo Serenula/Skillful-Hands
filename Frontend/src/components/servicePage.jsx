@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import styles from "./ServicePage.module.css";
+import { Link } from "react-router-dom";
 
 const ServicePage = () => {
   const fetchData = useFetch();
@@ -81,9 +82,12 @@ const ServicePage = () => {
             <p className={styles.serviceDescription}>{service.description}</p>
             <p className={styles.servicePrice}>Price: ${service.price}</p>
             {/* link to dedicated service page */}
-            <a href={`/service/${service._id}`} className={styles.serviceLink}>
+            <Link
+              to={`/services/${service._id}`}
+              className={styles.serviceLink}
+            >
               View Details
-            </a>
+            </Link>
           </div>
         ))}
       </div>
