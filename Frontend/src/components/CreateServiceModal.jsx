@@ -3,10 +3,10 @@ import styles from "./CreateServiceModal.module.css";
 import useFetch from "../hooks/useFetch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const CreateServiceModal = ({ isOpen, onClose, vendorCatgeory, onSuccess }) => {
+const CreateServiceModal = ({ isOpen, onClose, vendorCategory, onSuccess }) => {
   const [serviceData, setServiceData] = useState({
     name: "",
-    category: vendorCatgeory,
+    category: "vendorCategory",
     description: "",
     price: 0,
     availability: [],
@@ -24,9 +24,12 @@ const CreateServiceModal = ({ isOpen, onClose, vendorCatgeory, onSuccess }) => {
           return;
         }
 
-        const cachedData = queryClient.getQueryData("/api/auth/profile");
+        const cachedData = queryClient.getQueryData("vendorProfile");
         if (cachedData) {
-          setVendorProfile(cachedData);
+          setServiceData((prevData) => ({
+            ...prevData,
+            category: cachedData.category,
+          }));
           return;
         }
 
@@ -41,18 +44,19 @@ const CreateServiceModal = ({ isOpen, onClose, vendorCatgeory, onSuccess }) => {
             ...prevData,
             category: response.category,
           }));
+          queryClient.setQueryData("vendorProfile", response);
         } else {
-          console.error("No category found in vendor");
+          console.error("No category found in vendor profile");
         }
       } catch (error) {
-        console.error("Error fetching vendor profile");
+        console.error("Error fetching vendor profile:", error);
       }
     };
 
-    if (isOpen) {
+    if (isOpen && !serviceData.category) {
       fetchVendorCategory();
     }
-  }, [fetchData, queryClient, isOpen, token]);
+  }, [fetchData, queryClient, isOpen, token, serviceData.category]);
 
   const mutation = useMutation({
     mutationFn: async (newService) => {
@@ -71,7 +75,7 @@ const CreateServiceModal = ({ isOpen, onClose, vendorCatgeory, onSuccess }) => {
     onSuccess: () => {
       setServiceData({
         name: "",
-        category: vendorCatgeory,
+        category: "vendorCategory",
         description: "",
         price: 0,
         availability: [],
@@ -156,7 +160,7 @@ const CreateServiceModal = ({ isOpen, onClose, vendorCatgeory, onSuccess }) => {
             <input
               type="text"
               name="availability"
-              value={serviceData.availability}
+              value={serviceData.availability.join(", ")}
               onChange={handleAvailabilityChange}
               required
               className={styles.infoInput}

@@ -4,14 +4,15 @@ import useFetch from "../hooks/useFetch";
 import { jwtDecode } from "jwt-decode";
 import styles from "./VendorProfile.module.css";
 import CreateServiceModal from "./CreateServiceModal";
+import Logout from "./Logout";
 
-const VendorProfilePage = () => {
+const VendorProfilePage = ({ onLogout }) => {
   const [vendorProfile, setVendorProfile] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token);
+  // const decodedToken = jwtDecode(token);
 
   useEffect(() => {
     const fetchVendorProfile = async () => {
@@ -60,6 +61,10 @@ const VendorProfilePage = () => {
     }
   }, [fetchData, queryClient, token, vendorProfile]);
 
+  const handleLogout = () => {
+    console.log("Logout");
+  };
+
   const handleServiceCreationSuccess = () => {
     const fetchServices = async () => {
       const servicesResponse = await fetchData(
@@ -83,9 +88,7 @@ const VendorProfilePage = () => {
           <a href="/profile" className={styles.link}>
             Profile
           </a>
-          <a href="/" className={styles.link}>
-            Log out
-          </a>
+          <Logout onLogout={handleLogout} />
         </div>
       </nav>
 
