@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import { jwtDecode } from "jwt-decode";
 import styles from "./VendorProfile.module.css";
+import CreateServiceModal from "./CreateServiceModal";
 
 const VendorProfilePage = () => {
   const [vendorProfile, setVendorProfile] = useState({});
-  const [serviceData, setServiceData] = useState({
-    name: "",
-    category: "",
-    description: "",
-    price: 0,
-    availability: [],
-  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
@@ -30,10 +25,6 @@ const VendorProfilePage = () => {
 
         if (cachedData) {
           setVendorProfile(cachedData);
-          setServiceData((prevData) => ({
-            ...prevData,
-            category: cachedData.category,
-          }));
           return;
         }
 
@@ -48,11 +39,6 @@ const VendorProfilePage = () => {
         queryClient.setQueryData("/api/auth/profile", response);
 
         setVendorProfile(response);
-
-        setServiceData((prevData) => ({
-          ...prevData,
-          category: response.category,
-        }));
 
         if (response._id) {
           const servicesResponse = await fetchData(
@@ -74,56 +60,19 @@ const VendorProfilePage = () => {
     }
   }, [fetchData, queryClient, token, vendorProfile]);
 
-  const mutation = useMutation({
-    mutationFn: async (newService) => {
-      if (!token) {
-        throw new Error("No token found");
-      }
-
-      const response = await fetchData(
-        "/api/services/create",
-        "POST",
-        newService,
-        token
+  const handleServiceCreationSuccess = () => {
+    const fetchServices = async () => {
+      const servicesResponse = await fetchData(
+        `/api/services/${vendorProfile._id}`,
+        "GET"
       );
-      return response.data;
-    },
-    onSuccess: () => {
-      setServiceData({
-        name: "",
-        category: vendorProfile.category,
-        description: "",
-        price: 0,
-        availability: [],
-      });
-    },
-    onError: (error) => {
-      console.error("Error creating service:", error);
-    },
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setServiceData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+      setVendorProfile((prevProfile) => ({
+        ...prevProfile,
+        services: servicesResponse,
+      }));
+    };
+    fetchServices();
   };
-
-  const handleAvailabilityChange = (e) => {
-    const { value } = e.target;
-    const availabilityDates = value.split(",").map((date) => date.trim());
-    setServiceData((prevData) => ({
-      ...prevData,
-      availability: availabilityDates,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    mutation.mutate(serviceData);
-  };
-
   return (
     <div>
       <nav className={styles.navbar}>
@@ -175,9 +124,21 @@ const VendorProfilePage = () => {
                 </a>
               </div>
             ))}
-          <div className={styles.createServiceBox}>Create New Service</div>
+          <div
+            className={styles.createServiceBox}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Create New Service
+          </div>
         </div>
       </div>
+
+      <CreateServiceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        vendorCatgeory={vendorProfile.category}
+        onSuccess={handleServiceCreationSuccess}
+      />
     </div>
   );
 };
