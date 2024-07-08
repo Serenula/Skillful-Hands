@@ -82,7 +82,7 @@ const login = async (req, res) => {
     }
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
-      expiresIn: "20m",
+      expiresIn: "20d",
       jwtid: uuidv4(),
     });
 
@@ -128,4 +128,24 @@ const refresh = async (req, res) => {
   }
 };
 
-module.exports = { register, login, refresh, getAllUsers };
+const getUserVendorProfile = async (req, res) => {
+  try {
+    const userVendor = await Auth.findById(req.userVendorId);
+    if (!userVendor) {
+      return res
+        .status(404)
+        .json({ status: "error", msg: "Profile not found" });
+    }
+    res.status(200).json(userVendor);
+  } catch (error) {
+    res.status(500).json({ status: "ok", msg: "Error fetching profile" });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  refresh,
+  getAllUsers,
+  getUserVendorProfile,
+};
