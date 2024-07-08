@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import { jwtDecode } from "jwt-decode";
+import styles from "./VendorProfile.module.css";
 
 const VendorProfilePage = () => {
   const [vendorProfile, setVendorProfile] = useState({});
@@ -15,7 +16,7 @@ const VendorProfilePage = () => {
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token); // Decode token once
+  const decodedToken = jwtDecode(token);
 
   useEffect(() => {
     const fetchVendorProfile = async () => {
@@ -52,6 +53,17 @@ const VendorProfilePage = () => {
           ...prevData,
           category: response.category,
         }));
+
+        if (response._id) {
+          const servicesResponse = await fetchData(
+            `/api/services/${response._id}`,
+            "GET"
+          );
+          setVendorProfile((prevProfile) => ({
+            ...prevProfile,
+            services: servicesResponse,
+          }));
+        }
       } catch (error) {
         console.error("Error fetching profile", error);
       }
@@ -114,7 +126,56 @@ const VendorProfilePage = () => {
 
   return (
     <div>
-      <h2>Vendor Profile</h2>
+      <nav className={styles.navbar}>
+        <div className={styles.logoLink}>
+          <img src="Skilfull Hands.png" alt="Logo" className={styles.logo} />
+        </div>
+        <div className={styles.navLinks}>
+          <a href="/profile" className={styles.link}>
+            Profile
+          </a>
+          <a href="/" className={styles.link}>
+            Log out
+          </a>
+        </div>
+      </nav>
+
+      <div className={styles.hero}>
+        <img src="heroimage.jpg" alt="Hero" className={styles.heroImage} />
+        <img
+          src={vendorProfile.profilePicture || "vendorprofilepic.jpg"}
+          alt="Profile"
+          className={styles.profilePicture}
+        />
+      </div>
+
+      <div className={styles.profileInfo}>
+        <div className={styles.infoLabel}>Username:</div>
+        <input
+          type="text"
+          name="username"
+          value={vendorProfile.username || ""}
+          className={styles.infoInput}
+          readOnly
+        />
+        <div className={styles.infoLabel}>Email:</div>
+        <input
+          type="email"
+          name="email"
+          value={vendorProfile.email || ""}
+          className={styles.infoInput}
+          readOnly
+        />
+        <div className={styles.infoLabel}>Category:</div>
+        <input
+          type="text"
+          name="category"
+          value={serviceData.category || ""}
+          className={styles.infoInput}
+          readOnly
+        />
+      </div>
+
       <form onSubmit={handleSubmit}>
         <label>
           Service Name:
@@ -124,17 +185,7 @@ const VendorProfilePage = () => {
             value={serviceData.name}
             onChange={handleInputChange}
             required
-          />
-        </label>
-        <label>
-          Category:
-          <input
-            type="text"
-            name="category"
-            value={serviceData.category}
-            onChange={handleInputChange}
-            disabled
-            required
+            className={styles.infoInput}
           />
         </label>
         <label>
@@ -144,6 +195,7 @@ const VendorProfilePage = () => {
             value={serviceData.description}
             onChange={handleInputChange}
             required
+            className={styles.infoInput}
           />
         </label>
         <label>
@@ -154,16 +206,18 @@ const VendorProfilePage = () => {
             value={serviceData.price}
             onChange={handleInputChange}
             required
+            className={styles.infoInput}
           />
         </label>
         <label>
           Availability (comma-separated dates):
           <input
-            type="date"
+            type="text"
             name="availability"
             value={serviceData.availability.join(", ")}
             onChange={handleAvailabilityChange}
             required
+            className={styles.dateInput}
           />
         </label>
         <button type="submit" disabled={mutation.isLoading}>
@@ -171,8 +225,32 @@ const VendorProfilePage = () => {
         </button>
         {mutation.isError && <div>Error: {mutation.error.message}</div>}
       </form>
+
+      <div className={styles.serviceContainer}>
+        {vendorProfile.services &&
+          vendorProfile.services.map((service) => (
+            <div key={service._id} className={styles.serviceBox}>
+              <div className={styles.serviceTitle}>{service.name}</div>
+              <div className={styles.serviceDescription}>
+                {service.description}
+              </div>
+              <div className={styles.servicePrice}>${service.price}</div>
+              <a
+                href={`/services/${service._id}`}
+                className={styles.serviceLink}
+              >
+                View Service
+              </a>
+            </div>
+          ))}
+        <div
+          className={styles.createServiceBox}
+          onClick={() => console.log("Open CreateServiceModal")}
+        >
+          Create New Service
+        </div>
+      </div>
     </div>
   );
 };
-
 export default VendorProfilePage;

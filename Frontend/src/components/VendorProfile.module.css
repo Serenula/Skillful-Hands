@@ -1,0 +1,146 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: antiquewhite;
+  padding: 10px;
+  height: 50px;
+}
+
+.logoLink {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.logo {
+  height: auto;
+  width: auto;
+}
+
+.navLinks {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+  margin-left: 20px;
+  margin-right: 30px;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 33vh;
+  overflow: hidden;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profilePicture {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px; /* Adjust size as needed */
+  height: 150px; /* Adjust size as needed */
+  border-radius: 50%;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 20px;
+  color: black;
+}
+
+.infoLabel {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.infoInput {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.dateInput {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.serviceContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.serviceBox {
+  width: calc(33% - 20px);
+  max-width: 300px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  text-decoration: none;
+  color: black;
+  background-color: whitesmoke;
+}
+
+.createServiceBox {
+  width: calc(33% - 20px);
+  max-width: 300px;
+  padding: 20px;
+  border: 1px solid #007bff;
+  border-radius: 10px;
+  text-align: center;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.createServiceBox:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.serviceTitle {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.serviceDescription {
+  font-size: 1rem;
+  color: #555;
+}
+
+.servicePrice {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.serviceLink {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
