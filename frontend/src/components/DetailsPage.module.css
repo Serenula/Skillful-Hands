@@ -1,0 +1,53 @@
+.page {
+  background-color: antiquewhite;
+  width: 100vw;
+  height: 100vh;
+  color: black;
+}
+
+.vendor {
+  margin: 1em 3em 1em 3em;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.aboutUs {
+  background-color: whitesmoke;
+  border-radius: 10px;
+  padding: 20px;
+  margin-right: 1em;
+  border: solid;
+}
+
+.booking {
+  background-color: whitesmoke;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border: solid;
+}
+
+.bookButton {
+  background-color: antiquewhite;
+  border: solid;
+  color: black;
+}
+
+.service {
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  padding: 20px;
+  border: solid;
+  margin: 1em 3em 1em 3em;
+}
+
+.back {
+  margin: 1em 0em 1em 3em;
+}

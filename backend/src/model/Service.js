@@ -27,7 +27,7 @@ const serviceSchema = new mongoose.Schema(
     },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Auth",
+      ref: "Vendor",
       required: true,
     },
     availability: [{ type: Date, required: true }],

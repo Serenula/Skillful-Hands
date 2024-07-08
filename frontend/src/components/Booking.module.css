@@ -1,0 +1,42 @@
+.backdrop {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.booking {
+  background: white;
+  width: 50vh;
+  height: 80vh;
+  z-index: 100;
+  border-radius: 10px;
+  border: solid;
+  /* overflow: hidden; */
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+}
+
+.date {
+  background-color: antiquewhite;
+  border-radius: 1em;
+  padding: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* .date:active {
+  background-color: rgb(220, 176, 132);
+} */
+
+.radio {
+  display: none;
+}
