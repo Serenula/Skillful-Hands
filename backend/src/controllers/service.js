@@ -76,17 +76,23 @@ const getServiceById = async (req, res) => {
 };
 
 const createService = async (req, res) => {
+  const { name, description, price, availability } = req.body;
+  const vendorId = req.userVendorId;
   try {
-    console.log("Request body:", req.body);
-    const newService = {
-      name: req.body.name,
-      category: req.body.category,
-      description: req.body.description,
-      price: req.body.price,
-      availability: req.body.availability,
-      vendor: req.userVendorId,
-    };
-    console.log("new", newService);
+    const vendor = await Auth.findById(vendorId);
+    if (!vendor) {
+      return res.status(404).json({ msg: "Vendor not found" });
+    }
+    const category = vendor.category;
+
+    const newService = new Service({
+      name,
+      category,
+      description,
+      price,
+      vendor: vendorId,
+      availability,
+    });
     await Service.create(newService);
     res.json({ status: "ok", msg: "Service saved" });
   } catch (error) {
