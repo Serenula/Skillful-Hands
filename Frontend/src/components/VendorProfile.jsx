@@ -149,105 +149,33 @@ const VendorProfilePage = () => {
         />
       </div>
 
-      <div className={styles.profileInfo}>
-        <div className={styles.infoLabel}>Username:</div>
-        <input
-          type="text"
-          name="username"
-          value={vendorProfile.username || ""}
-          className={styles.infoInput}
-          readOnly
-        />
-        <div className={styles.infoLabel}>Email:</div>
-        <input
-          type="email"
-          name="email"
-          value={vendorProfile.email || ""}
-          className={styles.infoInput}
-          readOnly
-        />
-        <div className={styles.infoLabel}>Category:</div>
-        <input
-          type="text"
-          name="category"
-          value={serviceData.category || ""}
-          className={styles.infoInput}
-          readOnly
-        />
-      </div>
+      <div className={styles.profileContainer}>
+        <div className={styles.profileInfo}>
+          <div className={styles.infoText}>{vendorProfile.name}</div>
+          <div className={styles.infoLabel}>Username:</div>
+          <div className={styles.infoText}>{vendorProfile.username}</div>
+          <div className={styles.infoLabel}>Category:</div>
+          <div className={styles.infoText}>{vendorProfile.category}</div>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Service Name:
-          <input
-            type="text"
-            name="name"
-            value={serviceData.name}
-            onChange={handleInputChange}
-            required
-            className={styles.infoInput}
-          />
-        </label>
-        <label>
-          Description:
-          <textarea
-            name="description"
-            value={serviceData.description}
-            onChange={handleInputChange}
-            required
-            className={styles.infoInput}
-          />
-        </label>
-        <label>
-          Price:
-          <input
-            type="number"
-            name="price"
-            value={serviceData.price}
-            onChange={handleInputChange}
-            required
-            className={styles.infoInput}
-          />
-        </label>
-        <label>
-          Availability (comma-separated dates):
-          <input
-            type="text"
-            name="availability"
-            value={serviceData.availability.join(", ")}
-            onChange={handleAvailabilityChange}
-            required
-            className={styles.dateInput}
-          />
-        </label>
-        <button type="submit" disabled={mutation.isLoading}>
-          {mutation.isLoading ? "Creating..." : "Create Service"}
-        </button>
-        {mutation.isError && <div>Error: {mutation.error.message}</div>}
-      </form>
-
-      <div className={styles.serviceContainer}>
-        {vendorProfile.services &&
-          vendorProfile.services.map((service) => (
-            <div key={service._id} className={styles.serviceBox}>
-              <div className={styles.serviceTitle}>{service.name}</div>
-              <div className={styles.serviceDescription}>
-                {service.description}
+        <div className={styles.servicesContainer}>
+          {vendorProfile.services &&
+            vendorProfile.services.map((service) => (
+              <div key={service._id} className={styles.serviceBox}>
+                <div className={styles.serviceTitle}>{service.name}</div>
+                <div className={styles.serviceDescription}>
+                  {service.description}
+                </div>
+                <div className={styles.servicePrice}>${service.price}</div>
+                <a
+                  href={`/services/${service._id}`}
+                  className={styles.serviceLink}
+                >
+                  View Service
+                </a>
               </div>
-              <div className={styles.servicePrice}>${service.price}</div>
-              <a
-                href={`/services/${service._id}`}
-                className={styles.serviceLink}
-              >
-                View Service
-              </a>
-            </div>
-          ))}
-        <div
-          className={styles.createServiceBox}
-          onClick={() => console.log("Open CreateServiceModal")}
-        >
-          Create New Service
+            ))}
+          <div className={styles.createServiceBox}>Create New Service</div>
         </div>
       </div>
     </div>
