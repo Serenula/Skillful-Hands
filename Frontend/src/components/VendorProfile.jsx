@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
-import { jwtDecode } from "jwt-decode";
 import styles from "./VendorProfile.module.css";
 import CreateServiceModal from "./CreateServiceModal";
 import Logout from "./Logout";
 
-const VendorProfilePage = ({ onLogout }) => {
+const VendorProfilePage = () => {
   const [vendorProfile, setVendorProfile] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
-  // const decodedToken = jwtDecode(token);
+  const [editMode, setEditMode] = useState(false);
+  const [updatedProfile, setUpdatedProfile] = useState({});
 
   useEffect(() => {
     const fetchVendorProfile = async () => {
@@ -78,6 +78,44 @@ const VendorProfilePage = ({ onLogout }) => {
     };
     fetchServices();
   };
+
+  const handleEditProfile = () => {
+    setEditMode(true);
+    setUpdatedProfile(vendorProfile);
+  };
+
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    setUpdatedProfile({});
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      const response = await fetchData(
+        "/api/vendor/edit",
+        "PUT",
+        { about: updatedProfile.about },
+        token
+      );
+
+      if (response && response.success) {
+        setEditMode(false);
+        setVendorProfile({ ...vendorProfile, about: updatedProfile.about });
+        console.log("Profile updated successfully");
+      } else {
+        throw new Error(response.message || "Failed to update");
+      }
+    } catch (error) {
+      console.error("Error updating profile", error);
+    }
+  };
+  const handleInputChange = (e) => P;
+  const { name, value } = e.target;
+  setUpdatedProfile((prevProfile) => ({
+    ...prevProfile,
+    [name]: value,
+  }));
+
   return (
     <div>
       <nav className={styles.navbar}>
@@ -102,14 +140,52 @@ const VendorProfilePage = ({ onLogout }) => {
       </div>
 
       <div className={styles.profileContainer}>
-        <div className={styles.profileInfo}>
-          <div className={styles.infoText}>{vendorProfile.name}</div>
-          <div className={styles.infoLabel}>Username:</div>
-          <div className={styles.infoText}>{vendorProfile.username}</div>
-          <div className={styles.infoLabel}>Category:</div>
-          <div className={styles.infoText}>{vendorProfile.category}</div>
-        </div>
-
+        {!editMode ? (
+          <div className={styles.profileInfo}>
+            <div className={styles.infoText}>{vendorProfile.name}</div>
+            <div className={styles.infoLabel}>Username:</div>
+            <div className={styles.infoText}>{vendorProfile.username}</div>
+            <div className={styles.infoLabel}>Category:</div>
+            <div className={styles.infoText}>{vendorProfile.category}</div>
+            <div className={styles.infoLabel}>About Us:</div>
+            <div className={styles.infoText}>{vendorProfile.about}</div>
+            <button onClick={handleEditProfile}>Edit Profile</button>
+          </div>
+        ) : (
+          <div className={styles.profileEdit}>
+            <h2>Edit Profile</h2>
+            <label htmlFor="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={updatedProfile.username}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="category">Category:</label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              value={updatedProfile.category}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="aboutUs">About Us:</label>
+            <textarea
+              id="aboutUs"
+              name="aboutUs"
+              value={updatedProfile.aboutUs}
+              onChange={handleInputChange}
+              required
+            />
+            <div className={styles.buttonContainer}>
+              <button onClick={handleSaveProfile}>Save</button>
+              <button onClick={handleCancelEdit}>Cancel</button>
+            </div>
+          </div>
+        )}
         <div className={styles.servicesContainer}>
           {vendorProfile.services &&
             vendorProfile.services.map((service) => (
@@ -139,7 +215,7 @@ const VendorProfilePage = ({ onLogout }) => {
       <CreateServiceModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        vendorCatgeory={vendorProfile.category}
+        vendorCategory={vendorProfile.category}
         onSuccess={handleServiceCreationSuccess}
       />
     </div>

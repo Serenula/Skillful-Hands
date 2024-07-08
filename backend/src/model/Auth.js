@@ -57,6 +57,9 @@ const VendorSchema = new mongoose.Schema({
     ],
     required: true,
   },
+  about: {
+    type: String,
+  },
 });
 
 const Vendor = Auth.discriminator("Vendor", VendorSchema);

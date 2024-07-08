@@ -6,7 +6,6 @@ import Logout from "./Logout";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-
 const ServicePage = () => {
   const fetchData = useFetch();
   const token = localStorage.getItem("accessToken");
@@ -39,7 +38,7 @@ const ServicePage = () => {
 
   const handleSearch = () => {
     const filtered = services.filter((service) =>
-      service.title.toLowerCase().includes(searchTerm.toLowerCase())
+      service.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredServices(filtered);
   };
@@ -64,7 +63,7 @@ const ServicePage = () => {
         <div className={styles.navLinks}>
           <Link to={`/users/${userId}`} className={styles.link}>
             Profile
-          </a>
+          </Link>
           <Logout onLogout={handleLogout} />
         </div>
       </nav>
@@ -86,10 +85,9 @@ const ServicePage = () => {
       <div className={styles.serviceContainer}>
         {filteredServices.map((service) => (
           <div key={service._id} className={styles.serviceBox}>
-            <h3 className={styles.serviceTitle}>{service.title}</h3>
+            <h3 className={styles.serviceName}>{service.name}</h3>
             <p className={styles.serviceDescription}>{service.description}</p>
             <p className={styles.servicePrice}>Price: ${service.price}</p>
-            {/* link to dedicated service page */}
             <Link
               to={`/services/${service._id}`}
               className={styles.serviceLink}

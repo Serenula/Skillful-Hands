@@ -42,6 +42,28 @@ const seedVendors = async (req, res) => {
   }
 };
 
+const edit = async (req, res) => {
+  const { aboutUs } = req.body;
+  try {
+    const vendor = await Vendor.findById(req.user.id);
+
+    if (!vendor) {
+      return res
+        .status(404)
+        .json({ status: "Not Found", msg: "Vendor not found" });
+    }
+
+    vendor.aboutUs = aboutUs;
+    await vendor.save();
+
+    res.status(200).json({ status: "ok", msg: "Updated successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ status: "error", msg: "Server error" });
+  }
+};
+
 module.exports = {
   seedVendors,
+  edit,
 };
