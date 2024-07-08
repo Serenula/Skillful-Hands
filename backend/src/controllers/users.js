@@ -63,12 +63,10 @@ const createBooking = async (req, res) => {
   try {
     const booking = await Bookings.create({
       title: req.body.title,
-      category: req.body.category,
-      description: req.body.description,
       vendor: req.body.vendor,
       price: req.body.price,
       date: req.body.date,
-      time: req.body.time,
+      // time: req.body.time,
       user: req.params.id,
     });
 

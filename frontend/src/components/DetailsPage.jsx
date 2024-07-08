@@ -69,8 +69,12 @@ const DetailsPage = () => {
 
           {isBooking && (
             <Booking
+              id={params.id}
               handleBooking={handleBooking}
               availability={data.availability}
+              title={data.name}
+              vendor={data.vendor.username}
+              price={data.price}
             />
           )}
         </>

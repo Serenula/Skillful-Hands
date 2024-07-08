@@ -30,8 +30,8 @@ const BookingCard = (props) => {
           <div className={styles.title}>{props.booking.title}</div>
           <div>{props.booking.category}</div>
           <div>{props.booking.description}</div>
-          <div>{props.booking.date}</div>
-          <div>{props.booking.time}</div>
+          <div>{props.booking.date.split("T")[0]}</div>
+          {/* <div>{props.booking.time}</div> */}
           <div>{props.booking.vendor}</div>
           <div>
             <b>Booking Id: </b>
