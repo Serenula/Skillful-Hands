@@ -43,6 +43,25 @@ const getUserById = async (req, res) => {
   }
 };
 
+const getBookingsByUser = async (req, res) => {
+  try {
+    const bookings = await Bookings.find({ user: req.params.id });
+    bookings.map((booking) => {
+      if (booking.date > new Date()) {
+        booking.status = "Upcoming";
+      } else {
+        booking.status = "Completed";
+      }
+    });
+    res.json(bookings);
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "error getting user's bookings" });
+  }
+};
+
 const changeUserInfo = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, {
@@ -107,4 +126,5 @@ module.exports = {
   createBooking,
   deleteBooking,
   changeUserInfo,
+  getBookingsByUser,
 };
