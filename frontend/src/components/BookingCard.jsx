@@ -40,6 +40,9 @@ const BookingCard = (props) => {
           <div>
             <b>Total Paid:</b> ${props.booking.price}
           </div>
+          <div>
+            <b>Status:</b> {props.booking.status}
+          </div>
           {/* <button onClick={mutate}>Cancel Booking</button> */}
           <button onClick={() => setConfirmCancel(true)}>Cancel Booking</button>
         </div>

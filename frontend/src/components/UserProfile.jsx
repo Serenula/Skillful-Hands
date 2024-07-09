@@ -18,6 +18,8 @@ const UserProfile = (props) => {
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState("all");
+  const [sort, setSort] = useState("all");
 
   //fetch user data
   const { data, isSuccess, isFetching } = useQuery({
@@ -33,6 +35,20 @@ const UserProfile = (props) => {
     },
   });
 
+  //fetch bookings data - yes it's kinda repeated but the user schema is not manipulated only the booking schema is.
+  const getBookingsByUser = useQuery({
+    queryKey: ["booking"],
+    queryFn: async () => {
+      console.log("fetching data");
+      return await userDetails(
+        "/api/users/booking/" + userId,
+        undefined,
+        undefined,
+        token
+      );
+    },
+  });
+
   //render the user info when data is fetched.
   useEffect(() => {
     console.log("no data yet");
@@ -40,7 +56,7 @@ const UserProfile = (props) => {
       console.log("have data - reset states");
       setUsername(data.username);
       setAddress(data.address);
-      setBookings(data.bookings);
+      setBookings(getBookingsByUser.data);
       setEmail(data.email);
     }
   }, [data]);
@@ -69,6 +85,14 @@ const UserProfile = (props) => {
     },
   });
 
+  switch (sort) {
+    case "ascending":
+      bookings.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+      break;
+    case "descending":
+      bookings.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+  }
+
   return (
     <>
       {isFetching && <p>Loading...</p>}
@@ -95,18 +119,48 @@ const UserProfile = (props) => {
               {!updateInfo && (
                 <div>
                   <div className={styles.dropdown}>
-                    <div>My Bookings</div>
+                    <select
+                      className={styles.sortBy}
+                      onChange={(e) => setFilteredBookings(e.target.value)}
+                    >
+                      <option value="All">All Bookings</option>
+                      <option value="Upcoming">Upcoming Bookings</option>
+                      <option value="Completed">Completed Bookings</option>
+                    </select>
+
+                    <select
+                      className={styles.sortBy}
+                      onChange={(e) => setSort(e.target.value)}
+                    >
+                      <option value="ascending">Ascending Dates</option>
+                      <option value="descending">Descending Dates</option>
+                    </select>
                   </div>
                   <div className={styles.list}>
-                    {bookings.map((booking) => (
-                      <BookingCard
-                        booking={booking}
-                        key={booking._id}
-                        bookingId={booking._id}
-                        accessToken={token}
-                        userId={userId}
-                      />
-                    ))}
+                    {bookings.map(
+                      (booking) =>
+                        booking.status === filteredBookings && (
+                          <BookingCard
+                            booking={booking}
+                            key={booking._id}
+                            bookingId={booking._id}
+                            accessToken={token}
+                            userId={userId}
+                          />
+                        )
+                    )}
+                    {bookings.map(
+                      (booking) =>
+                        filteredBookings === "All" && (
+                          <BookingCard
+                            booking={booking}
+                            key={booking._id}
+                            bookingId={booking._id}
+                            accessToken={token}
+                            userId={userId}
+                          />
+                        )
+                    )}
                   </div>
                 </div>
               )}

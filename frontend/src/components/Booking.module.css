@@ -33,9 +33,9 @@
   margin-bottom: 1em;
 }
 
-/* .date:active {
+.date:focus {
   background-color: rgb(220, 176, 132);
-} */
+}
 
 .radio {
   display: none;

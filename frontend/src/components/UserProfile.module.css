@@ -1,7 +1,7 @@
 .page {
   display: grid;
-  height: 100vh;
   width: 100vw;
+  min-height: 100vh;
   grid-template-columns: 2fr 4fr;
   color: black;
 }
@@ -51,4 +51,12 @@ label {
   margin: 1em;
   padding: 1em;
   border-radius: 1em;
+}
+
+.sortBy {
+  background-color: white;
+  border-radius: 1em;
+  padding: 0.5em 1em 0.5em 1em;
+  margin-left: 1em;
+  color: black;
 }

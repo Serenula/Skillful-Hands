@@ -37,7 +37,7 @@ const ServicePage = () => {
 
   const handleSearch = () => {
     const filtered = services.filter((service) =>
-      service.title.toLowerCase().includes(searchTerm.toLowerCase())
+      service.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredServices(filtered);
   };
@@ -82,7 +82,7 @@ const ServicePage = () => {
       <div className={styles.serviceContainer}>
         {filteredServices.map((service) => (
           <div key={service._id} className={styles.serviceBox}>
-            <h3 className={styles.serviceTitle}>{service.title}</h3>
+            <h3 className={styles.serviceTitle}>{service.name}</h3>
             <p className={styles.serviceDescription}>{service.description}</p>
             <p className={styles.servicePrice}>Price: ${service.price}</p>
             {/* link to dedicated service page */}

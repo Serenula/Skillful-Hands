@@ -43,7 +43,7 @@ const Booking = (props) => {
           {/* <input id="date" type="date"></input> */}
           {availability.map((slot) => {
             return (
-              <div className={styles.date}>
+              <button className={styles.date}>
                 <input
                   className={styles.radio}
                   type="radio"
@@ -53,7 +53,7 @@ const Booking = (props) => {
                   onChange={(e) => setDate(e.target.value)}
                 ></input>
                 <label htmlFor={slot.split("T")[0]}>{slot.split("T")[0]}</label>
-              </div>
+              </button>
             );
           })}
         </div>
