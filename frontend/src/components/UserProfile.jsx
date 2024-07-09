@@ -18,8 +18,8 @@ const UserProfile = (props) => {
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState("all");
-  const [sort, setSort] = useState("all");
+  const [filteredBookings, setFilteredBookings] = useState("All");
+  const [sort, setSort] = useState("ascending");
 
   //fetch user data
   const { data, isSuccess, isFetching } = useQuery({
