@@ -3,12 +3,23 @@ import styles from "./BookingCard.module.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import ReviewModal from "./ReviewModal";
+import { useParams } from "react-router-dom";
 
 const BookingCard = (props) => {
   const cancelBooking = useFetch();
   const queryClient = useQueryClient();
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [reviewModal, setReviewModal] = useState(false);
+  const params = useParams();
+
+  const {} = useQuery({
+    queryKey: ["Service"],
+    queryFn: async () => {
+      const serviceLink = "/api/services/" + params.id;
+      console.log("Service Link:", serviceLink);
+      return await fetchData(serviceLink, "POST");
+    },
+  });
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -74,7 +85,7 @@ const BookingCard = (props) => {
 
       {reviewModal && (
         <ReviewModal
-          serviceId={props.booking.serviceId}
+          id={params.id}
           userId={props.userId}
           accessToken={props.accessToken}
           onClose={() => setReviewModal(false)}
