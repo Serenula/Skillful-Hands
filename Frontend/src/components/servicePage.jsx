@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import styles from "./ServicePage.module.css";
+import Logout from "./Logout";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+
 
 const ServicePage = () => {
   const fetchData = useFetch();
   const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token); // Decode token once
+  const decodedToken = jwtDecode(token);
   const userId = decodedToken.id;
   const [searchTerm, setSearchTerm] = useState("");
   const [services, setServices] = useState([]);
@@ -46,6 +48,10 @@ const ServicePage = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleLogout = () => {
+    console.log("Logout complete");
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -58,10 +64,8 @@ const ServicePage = () => {
         <div className={styles.navLinks}>
           <Link to={`/users/${userId}`} className={styles.link}>
             Profile
-          </Link>
-          <a href="/" className={styles.link}>
-            Log out
           </a>
+          <Logout onLogout={handleLogout} />
         </div>
       </nav>
       <div className={styles.hero}>
