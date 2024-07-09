@@ -5,7 +5,7 @@ const {
   register,
   login,
   refresh,
-  // getUserVendorProfile,
+  getUserVendorProfile,
 } = require("../controllers/auth");
 const {
   validateRegistration,
@@ -21,6 +21,6 @@ router.put("/register", validateRegistration, checkErrors, register);
 router.post("/login", validateLogin, checkErrors, login);
 router.post("/refresh", validateRefresh, checkErrors, refresh);
 router.post("/seed", seedVendors);
-// router.get("/profile", auth, getUserVendorProfile);
+router.get("/profile", auth, getUserVendorProfile);
 
 module.exports = router;

@@ -109,12 +109,13 @@ const VendorProfilePage = () => {
       console.error("Error updating profile", error);
     }
   };
-  const handleInputChange = (e) => P;
-  const { name, value } = e.target;
-  setUpdatedProfile((prevProfile) => ({
-    ...prevProfile,
-    [name]: value,
-  }));
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedProfile((prevProfile) => ({
+      ...prevProfile,
+      [name]: value,
+    }));
+  };
 
   return (
     <div>
@@ -196,7 +197,7 @@ const VendorProfilePage = () => {
                 </div>
                 <div className={styles.servicePrice}>${service.price}</div>
                 <a
-                  href={`/services/${service._id}`}
+                  href={`api/services/${service._id}`}
                   className={styles.serviceLink}
                 >
                   View Service

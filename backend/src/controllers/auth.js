@@ -65,7 +65,7 @@ const login = async (req, res) => {
     }
     const result = await bcrypt.compare(req.body.password, auth.hash);
     if (!result) {
-      res.json({ status: "ok", message: "login failed" });
+      res.json({ status: "Error", message: "login failed" });
     }
 
     const claims = {
@@ -130,24 +130,24 @@ const refresh = async (req, res) => {
   }
 };
 
-// const getUserVendorProfile = async (req, res) => {
-//   try {
-//     const userVendor = await Auth.findById(req.userVendorId);
-//     if (!userVendor) {
-//       return res
-//         .status(404)
-//         .json({ status: "error", msg: "Profile not found" });
-//     }
-//     res.status(200).json(userVendor);
-//   } catch (error) {
-//     res.status(500).json({ status: "ok", msg: "Error fetching profile" });
-//   }
-// };
+const getUserVendorProfile = async (req, res) => {
+  try {
+    const userVendor = await Auth.findById(req.userVendorId);
+    if (!userVendor) {
+      return res
+        .status(404)
+        .json({ status: "error", msg: "Profile not found" });
+    }
+    res.status(200).json(userVendor);
+  } catch (error) {
+    res.status(500).json({ status: "ok", msg: "Error fetching profile" });
+  }
+};
 
 module.exports = {
   register,
   login,
   refresh,
   getAll,
-  // getUserVendorProfile,
+  getUserVendorProfile,
 };
