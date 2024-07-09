@@ -12,8 +12,8 @@ const seedVendors = async (req, res) => {
         email: "vendor4@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 4",
         category: "Cleaning",
+        aboutUs: "Cleaning company",
       },
       {
         _id: "60d5ec49c45e2a001c8d2e25",
@@ -21,8 +21,8 @@ const seedVendors = async (req, res) => {
         email: "vendor5@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 5",
         category: "Aircon Servicing",
+        aboutUs: "Aircon company",
       },
       {
         _id: "60d5ec49c45e2a001c8d2e24",
@@ -30,8 +30,8 @@ const seedVendors = async (req, res) => {
         email: "vendor6@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 6",
         category: "Plumbing",
+        aboutUs: "Plumbing company",
       },
     ]);
 

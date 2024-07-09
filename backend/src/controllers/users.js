@@ -68,6 +68,7 @@ const createBooking = async (req, res) => {
       date: req.body.date,
       // time: req.body.time,
       user: req.params.id,
+      service: req.params.id,
     });
 
     const user = await User.findById(req.params.id);
@@ -80,6 +81,25 @@ const createBooking = async (req, res) => {
     res
       .status(400)
       .json({ status: "error", message: "error creating booking" });
+  }
+};
+
+const getBookingsByUser = async (req, res) => {
+  try {
+    const bookings = await Bookings.find({ user: req.params.id });
+    bookings.map((booking) => {
+      if (booking.date > new Date()) {
+        booking.status = "Upcoming";
+      } else {
+        booking.status = "Completed";
+      }
+    });
+    res.json(bookings);
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(400)
+      .json({ status: "error", message: "error getting user's bookings" });
   }
 };
 
@@ -107,4 +127,5 @@ module.exports = {
   createBooking,
   deleteBooking,
   changeUserInfo,
+  getBookingsByUser,
 };

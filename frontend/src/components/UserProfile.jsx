@@ -11,7 +11,7 @@ const UserProfile = (props) => {
   const userDetails = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token); // Decode token once
+  const decodedToken = jwtDecode(token);
   const userId = decodedToken.id;
   const [updateInfo, setUpdateInfo] = useState(false);
   const [email, setEmail] = useState("");

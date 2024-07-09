@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 const Booking = (props) => {
   const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token); // Decode token once
+  const decodedToken = jwtDecode(token);
   const userId = decodedToken.id;
   const [availability, setAvailability] = useState(props.availability);
   const createBooking = useFetch();
@@ -24,6 +24,7 @@ const Booking = (props) => {
           price: props.price,
           date,
           user: userId,
+          service: props.serviceId,
         },
         token
       ),

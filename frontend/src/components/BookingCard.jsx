@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import styles from "./BookingCard.module.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
+import ReviewModal from "./ReviewModal";
 
 const BookingCard = (props) => {
   const cancelBooking = useFetch();
   const queryClient = useQueryClient();
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const [reviewModal, setReviewModal] = useState(false);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -22,6 +24,15 @@ const BookingCard = (props) => {
       setConfirmCancel(false);
     },
   });
+
+  const handleReviewClick = () => {
+    setReviewModal(true);
+  };
+
+  const handleReviewSubmit = () => {
+    setReviewModal(false);
+    queryClient.invalidateQueries(["services"]);
+  };
 
   return (
     <>
@@ -42,6 +53,7 @@ const BookingCard = (props) => {
           </div>
           {/* <button onClick={mutate}>Cancel Booking</button> */}
           <button onClick={() => setConfirmCancel(true)}>Cancel Booking</button>
+          <button onClick={handleReviewClick}>Write Review</button>
         </div>
       )}
 
@@ -58,6 +70,16 @@ const BookingCard = (props) => {
             </div>
           </div>
         </div>
+      )}
+
+      {reviewModal && (
+        <ReviewModal
+          serviceId={props.booking.serviceId}
+          userId={props.userId}
+          accessToken={props.accessToken}
+          onClose={() => setReviewModal(false)}
+          onSubmit={handleReviewSubmit}
+        />
       )}
     </>
   );

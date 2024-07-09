@@ -3,7 +3,7 @@ import styles from "./CreateServiceModal.module.css";
 import useFetch from "../hooks/useFetch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const CreateServiceModal = ({ isOpen, onClose, vendorCategory, onSuccess }) => {
+const CreateServiceModal = ({ isOpen, onClose, onSuccess }) => {
   const [serviceData, setServiceData] = useState({
     name: "",
     category: "vendorCategory",

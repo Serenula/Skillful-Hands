@@ -16,7 +16,8 @@ const getAll = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const { username, email, password, role, address, category } = req.body;
+    const { username, email, password, role, address, category, aboutUs } =
+      req.body;
 
     const existingUser = await Auth.findOne({ email });
     if (existingUser) {
@@ -43,6 +44,7 @@ const register = async (req, res) => {
         hash,
         role,
         category,
+        aboutUs,
       });
     } else {
       return res.status(400).json({ status: "error", message: "Invalid role" });

@@ -33,7 +33,7 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/auth", auth);
 app.use("/api/users", users);
-app.use("api/vendor", vendor);
+app.use("/api/vendor", vendor);
 // app.use("/api/reviews", reviewRoutes);
 
 const PORT = process.env.PORT || 5001;

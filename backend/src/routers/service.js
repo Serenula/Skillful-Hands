@@ -26,7 +26,7 @@ router.delete(
 );
 router.get("/", getAllServices);
 router.get("/:vendorId", getVendorServices);
-router.get("/:id", getServiceById);
+router.post("/:serviceId", getServiceById);
 router.post(
   "/create",
   createServiceValidation,
