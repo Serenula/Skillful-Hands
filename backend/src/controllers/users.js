@@ -85,7 +85,6 @@ const createBooking = async (req, res) => {
       vendor: req.body.vendor,
       price: req.body.price,
       date: req.body.date,
-      // time: req.body.time,
       user: req.params.id,
     });
 

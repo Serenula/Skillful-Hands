@@ -5,7 +5,6 @@ const {
   seedServices,
   createService,
   deleteService,
-  getVendorServices,
 } = require("../controllers/service");
 const { createServiceValidation } = require("../validators/service");
 const checkErrors = require("../validators/checkErrors");
@@ -25,7 +24,6 @@ router.delete(
   deleteService
 );
 router.get("/", getAllServices);
-router.get("/:vendorId", getVendorServices);
 router.get("/:id", getServiceById);
 router.post(
   "/create",

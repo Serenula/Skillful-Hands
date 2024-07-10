@@ -26,17 +26,33 @@
 }
 
 .date {
+  background-color: white;
+  border-radius: 1em;
+  padding: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border: solid;
+}
+
+.radio {
+  display: none;
+}
+
+.active {
   background-color: antiquewhite;
   border-radius: 1em;
   padding: 1em;
   margin-top: 1em;
   margin-bottom: 1em;
+  border: solid;
 }
 
-.date:focus {
-  background-color: rgb(220, 176, 132);
+.btn {
+  background-color: antiquewhite;
+  border: solid;
+  color: black;
 }
 
-.radio {
-  display: none;
+.date:hover {
+  background-color: antiquewhite;
 }

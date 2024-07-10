@@ -8,6 +8,8 @@ const serviceRoutes = require("./src/routers/service");
 const reviewRoutes = require("./src/routers/review");
 const auth = require("./src/routers/auth");
 const users = require("./src/routers/users");
+// const storage = memoryStorage();
+// const upload = multer({ storage });
 
 const connectDB = require("./src/db/db");
 const limiter = rateLimit({

@@ -77,18 +77,6 @@ const getServiceById = async (req, res) => {
   }
 };
 
-const getVendorServices = async (req, res) => {
-  const { vendorId } = req.params;
-  try {
-    const services = await Service.find({ vendor: vendorId });
-
-    res.status(200).json(services);
-  } catch (error) {
-    console.error("Error", error.message);
-    res.status(500).json({ status: "error", msg: "internal server error" });
-  }
-};
-
 const createService = async (req, res) => {
   const { name, description, price, availability } = req.body;
   const vendorId = req.userVendorId;
@@ -151,5 +139,4 @@ module.exports = {
   getServiceById,
   createService,
   deleteService,
-  getVendorServices,
 };

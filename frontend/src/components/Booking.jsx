@@ -12,6 +12,7 @@ const Booking = (props) => {
   const createBooking = useFetch();
   const [date, setDate] = useState("");
   const queryClient = useQueryClient();
+  const [active, setActive] = useState(null);
 
   const { mutate } = useMutation({
     mutationFn: async () =>
@@ -33,6 +34,8 @@ const Booking = (props) => {
     },
   });
 
+  const handleDivClick = (slot) => setActive(slot);
+
   return (
     <div className={styles.backdrop}>
       <div className={styles.booking}>
@@ -40,26 +43,38 @@ const Booking = (props) => {
           <label htmlFor="date">
             <b>Select a date</b>
           </label>
-          {/* <input id="date" type="date"></input> */}
+
           {availability.map((slot) => {
             return (
-              <button className={styles.date}>
-                <input
-                  className={styles.radio}
-                  type="radio"
-                  name="date"
-                  id={slot.split("T")[0]}
-                  value={slot.split("T")[0]}
-                  onChange={(e) => setDate(e.target.value)}
-                ></input>
-                <label htmlFor={slot.split("T")[0]}>{slot.split("T")[0]}</label>
-              </button>
+              <>
+                <div
+                  onClick={() => handleDivClick(slot)}
+                  className={active === slot ? styles.active : styles.date}
+                >
+                  <input
+                    className={styles.radio}
+                    type="radio"
+                    name="date"
+                    id={slot.split("T")[0]}
+                    value={slot.split("T")[0]}
+                    onChange={(e) => setDate(e.target.value)}
+                  ></input>
+                  <label htmlFor={slot.split("T")[0]}>
+                    {slot.split("T")[0]}
+                  </label>
+                </div>
+              </>
             );
           })}
         </div>
+
         <div>
-          <button onClick={mutate}>Confirm</button>
-          <button onClick={props.handleBooking}>Cancel</button>
+          <button className={styles.btn} onClick={mutate}>
+            Confirm
+          </button>
+          <button className={styles.btn} onClick={props.handleBooking}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>

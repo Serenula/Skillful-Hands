@@ -6,14 +6,6 @@ const BookingsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // category: {
-    //   type: String,
-    //   required: true,
-    // },
-    // description: {
-    //   type: String,
-    //   required: true,
-    // },
     vendor: {
       type: String,
       required: true,
@@ -26,10 +18,6 @@ const BookingsSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    // time: {
-    //   type: String,
-    //   required: true,
-    // },
     status: {
       type: String,
       enum: ["completed", "upcoming"],

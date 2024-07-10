@@ -7,7 +7,7 @@ import styles from "./UserProfile.module.css";
 import BookingCard from "../components/BookingCard";
 import NavBar from "./NavBar";
 
-const UserProfile = (props) => {
+const UserProfile = () => {
   const userDetails = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
@@ -93,6 +93,22 @@ const UserProfile = (props) => {
       bookings.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
   }
 
+  const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
+
+  const handleUpload = async (e) => {
+    console.log(e);
+    const file = e.target.files[0];
+
+    if (!validFileTypes.find((filetype) => filetype === file.type)) {
+      console.error(error.message);
+      return;
+    }
+
+    // const form = new FormData();
+    // form.append("image", file);
+    // await mutate(form);
+  };
+
   return (
     <>
       {isFetching && <p>Loading...</p>}
@@ -103,6 +119,18 @@ const UserProfile = (props) => {
           <div className={styles.page}>
             <div className={styles.profile}>
               <div className={styles.user}>
+                <div>
+                  <label className={styles.uploadBtn} htmlFor="imageInput">
+                    Upload
+                  </label>
+                  <input
+                    id="imageInput"
+                    type="file"
+                    accept="image/png, image/jpeg, image/jpg"
+                    hidden
+                    onChange={handleUpload}
+                  ></input>
+                </div>
                 <h3>{data.username}</h3>
                 <button
                   onClick={() => {
@@ -181,7 +209,6 @@ const UserProfile = (props) => {
                           value={username}
                         ></input>
                       </div>
-                      {/* <div>{data.username}</div> */}
                     </div>
                     <div>
                       <label>Email</label>
@@ -191,7 +218,6 @@ const UserProfile = (props) => {
                           value={email}
                         ></input>
                       </div>
-                      {/* <div>{data.email}</div> */}
                     </div>
                     <div>
                       <label>Address</label>
@@ -201,7 +227,6 @@ const UserProfile = (props) => {
                           value={address}
                         ></input>
                       </div>
-                      {/* <div>{data.address}</div> */}
                     </div>
                     <div>
                       <button onClick={mutate}>Save</button>

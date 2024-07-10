@@ -7,6 +7,7 @@ const BookingCard = (props) => {
   const cancelBooking = useFetch();
   const queryClient = useQueryClient();
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const token = localStorage.getItem("accessToken");
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -14,7 +15,7 @@ const BookingCard = (props) => {
         "/api/users/booking/" + props.bookingId,
         "DELETE",
         { id: props.userId },
-        props.accessToken
+        token
       );
     },
     onSuccess: () => {
@@ -31,19 +32,19 @@ const BookingCard = (props) => {
           <div>{props.booking.category}</div>
           <div>{props.booking.description}</div>
           <div>{props.booking.date.split("T")[0]}</div>
-          {/* <div>{props.booking.time}</div> */}
           <div>{props.booking.vendor}</div>
           <div>
             <b>Booking Id: </b>
             {props.bookingId}
           </div>
           <div>
-            <b>Total Paid:</b> ${props.booking.price}
+            <b>Total Paid: </b> ${props.booking.price}
           </div>
           <div>
-            <b>Status:</b> {props.booking.status}
+            <b>Status: </b>
+            {props.booking.status}
           </div>
-          {/* <button onClick={mutate}>Cancel Booking</button> */}
+
           <button onClick={() => setConfirmCancel(true)}>Cancel Booking</button>
         </div>
       )}

@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import { jwtDecode } from "jwt-decode";
-import styles from "./VendorProfile.module.css";
-import CreateServiceModal from "./CreateServiceModal";
-import Logout from "./Logout";
 
-const VendorProfilePage = ({ onLogout }) => {
+const VendorProfilePage = () => {
   const [vendorProfile, setVendorProfile] = useState({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [serviceData, setServiceData] = useState({
+    name: "",
+    category: "",
+    description: "",
+    price: 0,
+    availability: [],
+  });
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
-  // const decodedToken = jwtDecode(token);
+  const decodedToken = jwtDecode(token); // Decode token once
 
   useEffect(() => {
     const fetchVendorProfile = async () => {
@@ -26,6 +29,10 @@ const VendorProfilePage = ({ onLogout }) => {
 
         if (cachedData) {
           setVendorProfile(cachedData);
+          setServiceData((prevData) => ({
+            ...prevData,
+            category: cachedData.category,
+          }));
           return;
         }
 
@@ -41,16 +48,10 @@ const VendorProfilePage = ({ onLogout }) => {
 
         setVendorProfile(response);
 
-        if (response._id) {
-          const servicesResponse = await fetchData(
-            `/api/services/${response._id}`,
-            "GET"
-          );
-          setVendorProfile((prevProfile) => ({
-            ...prevProfile,
-            services: servicesResponse,
-          }));
-        }
+        setServiceData((prevData) => ({
+          ...prevData,
+          category: response.category,
+        }));
       } catch (error) {
         console.error("Error fetching profile", error);
       }
@@ -61,88 +62,117 @@ const VendorProfilePage = ({ onLogout }) => {
     }
   }, [fetchData, queryClient, token, vendorProfile]);
 
-  const handleLogout = () => {
-    console.log("Logout");
+  const mutation = useMutation({
+    mutationFn: async (newService) => {
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await fetchData(
+        "/api/services/create",
+        "POST",
+        newService,
+        token
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      setServiceData({
+        name: "",
+        category: vendorProfile.category,
+        description: "",
+        price: 0,
+        availability: [],
+      });
+    },
+    onError: (error) => {
+      console.error("Error creating service:", error);
+    },
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setServiceData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleServiceCreationSuccess = () => {
-    const fetchServices = async () => {
-      const servicesResponse = await fetchData(
-        `/api/services/${vendorProfile._id}`,
-        "GET"
-      );
-      setVendorProfile((prevProfile) => ({
-        ...prevProfile,
-        services: servicesResponse,
-      }));
-    };
-    fetchServices();
+  const handleAvailabilityChange = (e) => {
+    const { value } = e.target;
+    const availabilityDates = value.split(",").map((date) => date.trim());
+    setServiceData((prevData) => ({
+      ...prevData,
+      availability: availabilityDates,
+    }));
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutation.mutate(serviceData);
+  };
+
   return (
     <div>
-      <nav className={styles.navbar}>
-        <div className={styles.logoLink}>
-          <img src="Skilfull Hands.png" alt="Logo" className={styles.logo} />
-        </div>
-        <div className={styles.navLinks}>
-          <a href="/profile" className={styles.link}>
-            Profile
-          </a>
-          <Logout onLogout={handleLogout} />
-        </div>
-      </nav>
-
-      <div className={styles.hero}>
-        <img src="heroimage.jpg" alt="Hero" className={styles.heroImage} />
-        <img
-          src={vendorProfile.profilePicture || "vendorprofilepic.jpg"}
-          alt="Profile"
-          className={styles.profilePicture}
-        />
-      </div>
-
-      <div className={styles.profileContainer}>
-        <div className={styles.profileInfo}>
-          <div className={styles.infoText}>{vendorProfile.name}</div>
-          <div className={styles.infoLabel}>Username:</div>
-          <div className={styles.infoText}>{vendorProfile.username}</div>
-          <div className={styles.infoLabel}>Category:</div>
-          <div className={styles.infoText}>{vendorProfile.category}</div>
-        </div>
-
-        <div className={styles.servicesContainer}>
-          {vendorProfile.services &&
-            vendorProfile.services.map((service) => (
-              <div key={service._id} className={styles.serviceBox}>
-                <div className={styles.serviceTitle}>{service.name}</div>
-                <div className={styles.serviceDescription}>
-                  {service.description}
-                </div>
-                <div className={styles.servicePrice}>${service.price}</div>
-                <a
-                  href={`/services/${service._id}`}
-                  className={styles.serviceLink}
-                >
-                  View Service
-                </a>
-              </div>
-            ))}
-          <div
-            className={styles.createServiceBox}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Create New Service
-          </div>
-        </div>
-      </div>
-
-      <CreateServiceModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        vendorCatgeory={vendorProfile.category}
-        onSuccess={handleServiceCreationSuccess}
-      />
+      <h2>Vendor Profile</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Service Name:
+          <input
+            type="text"
+            name="name"
+            value={serviceData.name}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          Category:
+          <input
+            type="text"
+            name="category"
+            value={serviceData.category}
+            onChange={handleInputChange}
+            disabled
+            required
+          />
+        </label>
+        <label>
+          Description:
+          <textarea
+            name="description"
+            value={serviceData.description}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          Price:
+          <input
+            type="number"
+            name="price"
+            value={serviceData.price}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          Availability (comma-separated dates):
+          <input
+            type="date"
+            name="availability"
+            value={serviceData.availability.join(", ")}
+            onChange={handleAvailabilityChange}
+            required
+          />
+        </label>
+        <button type="submit" disabled={mutation.isLoading}>
+          {mutation.isLoading ? "Creating..." : "Create Service"}
+        </button>
+        {mutation.isError && <div>Error: {mutation.error.message}</div>}
+      </form>
     </div>
   );
 };
+
 export default VendorProfilePage;

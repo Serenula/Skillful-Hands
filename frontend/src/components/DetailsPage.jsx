@@ -69,7 +69,6 @@ const DetailsPage = () => {
 
           {isBooking && (
             <Booking
-              key={params.id}
               id={params.id}
               handleBooking={handleBooking}
               availability={data.availability}

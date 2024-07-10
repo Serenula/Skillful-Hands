@@ -26,7 +26,7 @@ const LoginModal = ({ onClose }) => {
         { email, password },
         null
       );
-      console.log("Login successful");
+      console.log("Login successful:", response);
 
       const { access } = response;
       localStorage.setItem("accessToken", access);
