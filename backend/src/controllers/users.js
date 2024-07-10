@@ -86,7 +86,7 @@ const createBooking = async (req, res) => {
       price: req.body.price,
       date: req.body.date,
       user: req.params.id,
-      service: req.params.id,
+      service: req.body.serviceId,
     });
 
     const user = await User.findById(req.params.id);

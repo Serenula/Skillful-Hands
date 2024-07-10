@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styles from "./BookingCard.module.css";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
-import ReviewModal from "./ReviewModal";
-import { useParams } from "react-router-dom";
 
 const BookingCard = (props) => {
   const cancelBooking = useFetch();
@@ -11,6 +9,8 @@ const BookingCard = (props) => {
   const [confirmCancel, setConfirmCancel] = useState(false);
   const token = localStorage.getItem("accessToken");
   const [reviewModal, setReviewModal] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -27,14 +27,25 @@ const BookingCard = (props) => {
     },
   });
 
-  const handleReviewClick = () => {
-    setReviewModal(true);
-  };
-
-  const handleReviewSubmit = () => {
-    setReviewModal(false);
-    queryClient.invalidateQueries(["services"]);
-  };
+  const { mutate: submitReview } = useMutation({
+    mutationFn: async () => {
+      return await cancelBooking(
+        "/api/review/create",
+        "POST",
+        {
+          serviceId: props.booking.serviceId,
+          userId: props.userId,
+          rating,
+          comment,
+        },
+        token
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["service", props.booking.serviceId]);
+      setReviewModal(false);
+    },
+  });
 
   return (
     <>
@@ -45,6 +56,7 @@ const BookingCard = (props) => {
           <div>{props.booking.description}</div>
           <div>{props.booking.date.split("T")[0]}</div>
           <div>{props.booking.vendor}</div>
+          <div>{props.booking.serviceId}</div>
           <div>
             <b>Booking Id: </b>
             {props.bookingId}
@@ -58,7 +70,7 @@ const BookingCard = (props) => {
           </div>
 
           <button onClick={() => setConfirmCancel(true)}>Cancel Booking</button>
-          {/* <button onClick={handleReviewClick}>Write Review</button> */}
+          <button onClick={() => setReviewModal(true)}>Write Review</button>
         </div>
       )}
 
@@ -71,17 +83,43 @@ const BookingCard = (props) => {
             </div>
             <div>
               <button onClick={mutate}>Confirm</button>
-              <button onClick={() => setConfirmCancel(false)}>back</button>
+              <button onClick={() => setConfirmCancel(false)}>Back</button>
             </div>
           </div>
         </div>
       )}
 
       {reviewModal && (
-        <ReviewModal
-          onReviewCreated={handleReviewSubmit}
-          onClose={() => setReviewModal(false)}
-        />
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <h2>Write a Review</h2>
+            <div>
+              <label>Rating: </label>
+              <select
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+              >
+                <option value={0}>Select</option>
+                <option value={1}>1</option>
+                <option value={2}>2</option>
+                <option value={3}>3</option>
+                <option value={4}>4</option>
+                <option value={5}>5</option>
+              </select>
+            </div>
+            <div>
+              <label>Comment: </label>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              ></textarea>
+            </div>
+            <div>
+              <button onClick={submitReview}>Submit Review</button>
+              <button onClick={() => setReviewModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

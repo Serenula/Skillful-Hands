@@ -76,6 +76,10 @@ const UserProfile = () => {
     }
   }, [bookings, sort]);
 
+  useEffect(() => {
+    console.log("Current Bookings:", bookings);
+  }, [bookings]);
+
   const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
 
   const handleUpload = async (e) => {
@@ -167,26 +171,26 @@ const UserProfile = () => {
                     </select>
                   </div>
                   <div className={styles.list}>
-                    {bookings.map(
-                      (booking) =>
-                        booking.status === filteredBookings && (
-                          <BookingCard
-                            booking={booking}
-                            key={booking._id}
-                            bookingId={booking._id}
-                            accessToken={token}
-                            userId={userId}
-                          />
+                    {bookings
+                      .filter((booking) => {
+                        if (filteredBookings === "All") return true;
+                        if (
+                          filteredBookings === "Upcoming" &&
+                          booking.status === "Upcoming"
                         )
-                    )}
-                    {filteredBookings === "All" &&
-                      bookings.map((booking) => (
+                          return true;
+                        if (
+                          filteredBookings === "Completed" &&
+                          booking.status === "Completed"
+                        )
+                          return true;
+                        return false;
+                      })
+                      .map((booking) => (
                         <BookingCard
-                          booking={booking}
                           key={booking._id}
-                          bookingId={booking._id}
-                          accessToken={token}
-                          userId={userId}
+                          booking={booking}
+                          serviceId={booking.serviceId}
                         />
                       ))}
                   </div>

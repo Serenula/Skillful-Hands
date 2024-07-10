@@ -89,10 +89,9 @@ const getAllServices = async (req, res) => {
 
 const getServiceById = async (req, res) => {
   try {
-    const service = await Service.findById(req.params.serviceId).populate(
-      "vendor",
-      "username aboutUs"
-    );
+    const service = await Service.findById(req.params.serviceId)
+      .populate("vendor", "username aboutUs")
+      .populate("reviews");
     console.log(service);
     if (!service) {
       return res.status(404).json({ message: "Service not found" });

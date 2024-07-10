@@ -33,11 +33,6 @@ const BookingsSchema = new mongoose.Schema(
       ref: "Service",
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["completed", "upcoming"],
-      default: "upcoming",
-    },
   },
   { collection: "bookings" }
 );
