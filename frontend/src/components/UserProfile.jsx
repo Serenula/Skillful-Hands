@@ -68,28 +68,14 @@ const UserProfile = () => {
   }, [bookingsData, isBookingSuccess]);
 
   // Sort bookings based on selected order
-  useEffect(() => {
-    if (sort === "ascending") {
+  const sorting = (value) => {
+    console.log(value);
+    setSort(value);
+    if (value === "ascending") {
       bookings.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
-    } else if (sort === "descending") {
+    } else {
       bookings.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
     }
-  }, [bookings, sort]);
-
-  const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
-
-  const handleUpload = async (e) => {
-    const file = e.target.files[0];
-
-    if (!validFileTypes.includes(file.type)) {
-      console.error("Invalid file type");
-      return;
-    }
-
-    // Example of how to handle file upload
-    // const form = new FormData();
-    // form.append("image", file);
-    // await mutate(form);
   };
 
   const { mutate } = useMutation({
@@ -122,18 +108,6 @@ const UserProfile = () => {
           <div className={styles.page}>
             <div className={styles.profile}>
               <div className={styles.user}>
-                <div>
-                  <label className={styles.uploadBtn} htmlFor="imageInput">
-                    Upload
-                  </label>
-                  <input
-                    id="imageInput"
-                    type="file"
-                    accept="image/png, image/jpeg, image/jpg"
-                    hidden
-                    onChange={handleUpload}
-                  ></input>
-                </div>
                 <h3>{username}</h3>
                 <button
                   onClick={() => {
@@ -160,7 +134,7 @@ const UserProfile = () => {
 
                     <select
                       className={styles.sortBy}
-                      onChange={(e) => setSort(e.target.value)}
+                      onChange={(e) => sorting(e.target.value)}
                     >
                       <option value="ascending">Ascending Dates</option>
                       <option value="descending">Descending Dates</option>
