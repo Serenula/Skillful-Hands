@@ -1,9 +1,10 @@
-const Auth = require("../model/Auth");
+const { Auth, User, Vendor } = require("../model/Auth");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 
-const getAllUsers = async (req, res) => {
+//for both users and vendors
+const getAll = async (req, res) => {
   try {
     const users = await Auth.find().select("username email role address");
     res.json(users);
@@ -28,7 +29,7 @@ const register = async (req, res) => {
 
     let newUser;
     if (role === "user") {
-      newUser = await Auth.create({
+      newUser = await User.create({
         username,
         email,
         hash,
@@ -36,7 +37,7 @@ const register = async (req, res) => {
         address,
       });
     } else if (role === "vendor") {
-      newUser = await Auth.create({
+      newUser = await Vendor.create({
         username,
         email,
         hash,
@@ -71,14 +72,15 @@ const login = async (req, res) => {
       username: auth.username,
       email: auth.email,
       role: auth.role,
+      id: auth._id,
     };
 
     if (auth.role === "user") {
-      claims.address = auth.address;
+      claims.address = User.address;
     }
 
     if (auth.role === "vendor") {
-      claims.category = auth.category;
+      claims.category = Vendor.category;
     }
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
@@ -128,24 +130,9 @@ const refresh = async (req, res) => {
   }
 };
 
-const getUserVendorProfile = async (req, res) => {
-  try {
-    const userVendor = await Auth.findById(req.userVendorId);
-    if (!userVendor) {
-      return res
-        .status(404)
-        .json({ status: "error", msg: "Profile not found" });
-    }
-    res.status(200).json(userVendor);
-  } catch (error) {
-    res.status(500).json({ status: "ok", msg: "Error fetching profile" });
-  }
-};
-
 module.exports = {
   register,
   login,
   refresh,
-  getAllUsers,
-  getUserVendorProfile,
+  getAll,
 };

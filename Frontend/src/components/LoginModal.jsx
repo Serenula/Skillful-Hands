@@ -31,6 +31,7 @@ const LoginModal = ({ onClose }) => {
       const { access } = response;
       localStorage.setItem("accessToken", access);
       const decodedToken = jwtDecode(access);
+      console.log(decodedToken);
 
       const { role } = decodedToken;
 

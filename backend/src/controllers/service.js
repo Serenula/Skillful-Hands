@@ -1,11 +1,11 @@
 const Service = require("../model/Service");
-const Auth = require("../model/Auth");
+const { Vendor } = require("../model/Auth");
 
 const seedServices = async (req, res) => {
   await Service.deleteMany({});
 
   try {
-    const vendors = await Auth.find({ role: "vendor" });
+    const vendors = await Vendor.find();
 
     if (vendors.length === 0) {
       return res.status(400).json({
@@ -13,6 +13,8 @@ const seedServices = async (req, res) => {
         msg: "No vendors found. Please seed vendors first.",
       });
     }
+
+    console.log(vendors);
 
     await Service.create([
       {
@@ -79,7 +81,7 @@ const createService = async (req, res) => {
   const { name, description, price, availability } = req.body;
   const vendorId = req.userVendorId;
   try {
-    const vendor = await Auth.findById(vendorId);
+    const vendor = await Vendor.findById(vendorId);
     if (!vendor) {
       return res.status(404).json({ msg: "Vendor not found" });
     }

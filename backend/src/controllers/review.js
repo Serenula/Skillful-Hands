@@ -1,6 +1,6 @@
 const Review = require("../model/Review");
 const Service = require("../model/Service");
-const Auth = require("../model/Auth");
+const { User } = require("../model/Auth");
 
 const createReview = async (req, res) => {
   const { serviceId, userId, rating, comment } = req.body;
@@ -49,7 +49,7 @@ const seedReviews = async (req, res) => {
 
   try {
     const services = await Service.find();
-    const users = await Auth.find({ role: "user" });
+    const users = await User.find();
 
     if (services.length === 0 || users.length === 0) {
       return res
