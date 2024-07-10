@@ -11,7 +11,7 @@ const UserProfile = () => {
   const userDetails = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token);
+  const decodedToken = jwtDecode(token); // Decode token once
   const userId = decodedToken.id;
   const [updateInfo, setUpdateInfo] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,15 +21,11 @@ const UserProfile = () => {
   const [filteredBookings, setFilteredBookings] = useState("All");
   const [sort, setSort] = useState("ascending");
 
-  // Fetch user data
-  const {
-    data: userData,
-    isSuccess: isUserDataSuccess,
-    isFetching: isUserDataFetching,
-  } = useQuery({
+  //fetch user data
+  const { data, isSuccess, isFetching } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      console.log("Fetching user data");
+      console.log("fetching data");
       return await userDetails(
         "/api/users/" + userId,
         undefined,
@@ -39,11 +35,11 @@ const UserProfile = () => {
     },
   });
 
-  // Fetch bookings data
-  const { data: bookingsData, isSuccess: isBookingSuccess } = useQuery({
+  //fetch bookings data - yes it's kinda repeated but the user schema is not manipulated only the booking schema is.
+  const getBookingsByUser = useQuery({
     queryKey: ["booking"],
     queryFn: async () => {
-      console.log("Fetching bookings data");
+      console.log("fetching data");
       return await userDetails(
         "/api/users/booking/" + userId,
         undefined,
@@ -53,48 +49,24 @@ const UserProfile = () => {
     },
   });
 
+  //render the user info when data is fetched.
   useEffect(() => {
-    if (isUserDataSuccess && userData) {
-      setUsername(userData.username);
-      setAddress(userData.address);
-      setEmail(userData.email);
+    console.log("no data yet");
+    if (data) {
+      console.log("have data - reset states");
+      setUsername(data.username);
+      setAddress(data.address);
+      setBookings(getBookingsByUser.data);
+      setEmail(data.email);
     }
-  }, [userData, isUserDataSuccess]);
+  }, [data]);
 
-  useEffect(() => {
-    if (isBookingSuccess && bookingsData) {
-      setBookings(bookingsData);
-    }
-  }, [bookingsData, isBookingSuccess]);
-
-  // Sort bookings based on selected order
-  useEffect(() => {
-    if (sort === "ascending") {
-      bookings.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
-    } else if (sort === "descending") {
-      bookings.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
-    }
-  }, [bookings, sort]);
-
-  const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
-
-  const handleUpload = async (e) => {
-    const file = e.target.files[0];
-
-    if (!validFileTypes.includes(file.type)) {
-      console.error("Invalid file type");
-      return;
-    }
-
-    // Example of how to handle file upload
-    // const form = new FormData();
-    // form.append("image", file);
-    // await mutate(form);
-  };
-
+  //making changes to user's info
   const { mutate } = useMutation({
     mutationFn: async () => {
-      console.log("Sending request to update user data");
+      console.log(address);
+      console.log(username);
+      console.log("sending request to change data");
       return await userDetails(
         "/api/users/" + userId,
         "PATCH",
@@ -107,15 +79,42 @@ const UserProfile = () => {
       );
     },
     onSuccess: () => {
-      console.log("Successful update request");
+      console.log("successful sending change request");
       queryClient.invalidateQueries(["user"]);
+      console.log("data should be changed");
     },
   });
 
+  const sorting = (value) => {
+    console.log(value);
+    setSort(value);
+    if (value === "ascending") {
+      bookings.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    } else {
+      bookings.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+    }
+  };
+
+  const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
+
+  const handleUpload = async (e) => {
+    console.log(e);
+    const file = e.target.files[0];
+
+    if (!validFileTypes.find((filetype) => filetype === file.type)) {
+      console.error(error.message);
+      return;
+    }
+
+    // const form = new FormData();
+    // form.append("image", file);
+    // await mutate(form);
+  };
+
   return (
     <>
-      {isUserDataFetching && <p>Loading user data...</p>}
-      {isUserDataSuccess && (
+      {isFetching && <p>Loading...</p>}
+      {isSuccess && (
         <>
           <NavBar />
           <Link to={"/services"}>Go Back</Link>
@@ -134,7 +133,7 @@ const UserProfile = () => {
                     onChange={handleUpload}
                   ></input>
                 </div>
-                <h3>{username}</h3>
+                <h3>{data.username}</h3>
                 <button
                   onClick={() => {
                     setUpdateInfo(!updateInfo);
@@ -143,6 +142,7 @@ const UserProfile = () => {
                   Update personal info
                 </button>
               </div>
+              <div></div>
             </div>
 
             <div className={styles.rightColumn}>
@@ -160,7 +160,7 @@ const UserProfile = () => {
 
                     <select
                       className={styles.sortBy}
-                      onChange={(e) => setSort(e.target.value)}
+                      onChange={(e) => sorting(e.target.value)}
                     >
                       <option value="ascending">Ascending Dates</option>
                       <option value="descending">Descending Dates</option>
@@ -179,16 +179,18 @@ const UserProfile = () => {
                           />
                         )
                     )}
-                    {filteredBookings === "All" &&
-                      bookings.map((booking) => (
-                        <BookingCard
-                          booking={booking}
-                          key={booking._id}
-                          bookingId={booking._id}
-                          accessToken={token}
-                          userId={userId}
-                        />
-                      ))}
+                    {bookings.map(
+                      (booking) =>
+                        filteredBookings === "All" && (
+                          <BookingCard
+                            booking={booking}
+                            key={booking._id}
+                            bookingId={booking._id}
+                            accessToken={token}
+                            userId={userId}
+                          />
+                        )
+                    )}
                   </div>
                 </div>
               )}
@@ -200,7 +202,7 @@ const UserProfile = () => {
                   </div>
                   <div className={styles.info}>
                     <label>User Id</label>
-                    <div>{userData._id}</div>
+                    <div>{data._id}</div>
                     <div>
                       <label>Username</label>
                       <div>
@@ -232,10 +234,9 @@ const UserProfile = () => {
                       <button onClick={mutate}>Save</button>
                       <button
                         onClick={() => {
-                          setUpdateInfo(false);
-                          setUsername(userData.username);
-                          setAddress(userData.address);
-                          setEmail(userData.email);
+                          setUpdateInfo(!updateInfo);
+                          setUsername(data.username);
+                          setAddress(data.address);
                         }}
                       >
                         Cancel
