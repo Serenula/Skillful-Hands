@@ -3,6 +3,7 @@ import useFetch from "../hooks/useFetch";
 import styles from "./ReviewModal.module.css";
 
 const ReviewModal = ({ serviceId, onclose, onReviewCreated }) => {
+  console.log("Received serviceId:", serviceId);
   const [rating, setRating] = useState(1);
   const [comment, setComment] = useState("");
   const fetchData = useFetch();

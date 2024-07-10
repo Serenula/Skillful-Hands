@@ -4,6 +4,7 @@ import useFetch from "../hooks/useFetch";
 import styles from "./ServicePage.module.css";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import Logout from "./Logout";
 
 const ServicePage = () => {
   const fetchData = useFetch();
@@ -46,6 +47,10 @@ const ServicePage = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleLogout = () => {
+    console.log("Logout complete");
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -83,9 +88,9 @@ const ServicePage = () => {
             <h3 className={styles.serviceName}>{service.name}</h3>
             <p className={styles.serviceDescription}>{service.description}</p>
             <p className={styles.servicePrice}>Price: ${service.price}</p>
-            <p className={styles.serviceRating}>
+            {/* <p className={styles.serviceRating}>
               Reviews: {service.reviews || "No ratings yet"}
-            </p>
+            </p> */}
             <Link
               to={`/services/${service._id}`}
               className={styles.serviceLink}

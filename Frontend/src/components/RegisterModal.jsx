@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Modal.module.css";
+import useFetch from "../hooks/useFetch";
 
 const RegisterModal = ({ onClose }) => {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
@@ -19,10 +20,30 @@ const RegisterModal = ({ onClose }) => {
     };
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Register with:", { name, email, password, role });
-    onClose();
+
+    const userData = { username, email, password, role };
+    if (role === "user") {
+      userData.address = address;
+    } else if (role === "vendor") {
+      userData.category = category;
+      userData.aboutUs = aboutUs;
+    }
+
+    try {
+      const response = await fetchData("/api/auth/register", "PUT", userData);
+
+      if (response && response.success) {
+        console.log("Registration successful");
+        onClose();
+      } else {
+        throw new Error(response.message || "Something went wrong");
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      setError(error.message);
+    }
   };
 
   return (
@@ -32,13 +53,14 @@ const RegisterModal = ({ onClose }) => {
           &times;
         </span>
         <h2>Register</h2>
+        {error && <div className={styles.error}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <label>Name:</label>
+            <label>Username:</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
             <label>Email:</label>
@@ -66,6 +88,17 @@ const RegisterModal = ({ onClose }) => {
               <option value="vendor">Vendor</option>
             </select>
           </div>
+          {role === "user" && (
+            <div className={styles.formGroup}>
+              <label htmlFor="address">Address:</label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+              />
+            </div>
+          )}
           {role === "vendor" && (
             <div className={styles.formGroup}>
               <label htmlFor="category">Category:</label>
@@ -82,7 +115,7 @@ const RegisterModal = ({ onClose }) => {
                 <option value="Pet Grooming">Pet Grooming</option>
                 <option value="Personal Training">Personal Training</option>
               </select>
-              <lable htmlFor="aboutUs">About Us:</lable>
+              <label> About Us:</label>
               <input
                 type="text"
                 value={aboutUs}
@@ -92,7 +125,7 @@ const RegisterModal = ({ onClose }) => {
             </div>
           )}
           <div className={styles.buttonContainer}>
-            <button type="subit">Register</button>
+            <button type="submit">Register</button>
           </div>
         </form>
       </div>

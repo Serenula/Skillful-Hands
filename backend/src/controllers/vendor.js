@@ -58,7 +58,7 @@ const edit = async (req, res) => {
 
     res.status(200).json({ status: "ok", msg: "Updated successfully" });
   } catch (error) {
-    console.error(error.message);
+    console.error("Database error".error);
     res.status(500).json({ status: "error", msg: "Server error" });
   }
 };

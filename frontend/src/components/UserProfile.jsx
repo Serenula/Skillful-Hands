@@ -21,11 +21,15 @@ const UserProfile = () => {
   const [filteredBookings, setFilteredBookings] = useState("All");
   const [sort, setSort] = useState("ascending");
 
-  //fetch user data
-  const { data, isSuccess, isFetching } = useQuery({
+  // Fetch user data
+  const {
+    data: userData,
+    isSuccess: isUserDataSuccess,
+    isFetching: isUserDataFetching,
+  } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      console.log("fetching data");
+      console.log("Fetching user data");
       return await userDetails(
         "/api/users/" + userId,
         undefined,
@@ -35,11 +39,11 @@ const UserProfile = () => {
     },
   });
 
-  //fetch bookings data - yes it's kinda repeated but the user schema is not manipulated only the booking schema is.
-  const getBookingsByUser = useQuery({
+  // Fetch bookings data
+  const { data: bookingsData, isSuccess: isBookingSuccess } = useQuery({
     queryKey: ["booking"],
     queryFn: async () => {
-      console.log("fetching data");
+      console.log("Fetching bookings data");
       return await userDetails(
         "/api/users/booking/" + userId,
         undefined,
@@ -49,24 +53,48 @@ const UserProfile = () => {
     },
   });
 
-  //render the user info when data is fetched.
   useEffect(() => {
-    console.log("no data yet");
-    if (data) {
-      console.log("have data - reset states");
-      setUsername(data.username);
-      setAddress(data.address);
-      setBookings(getBookingsByUser.data);
-      setEmail(data.email);
+    if (isUserDataSuccess && userData) {
+      setUsername(userData.username);
+      setAddress(userData.address);
+      setEmail(userData.email);
     }
-  }, [data]);
+  }, [userData, isUserDataSuccess]);
 
-  //making changes to user's info
+  useEffect(() => {
+    if (isBookingSuccess && bookingsData) {
+      setBookings(bookingsData);
+    }
+  }, [bookingsData, isBookingSuccess]);
+
+  // Sort bookings based on selected order
+  useEffect(() => {
+    if (sort === "ascending") {
+      bookings.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    } else if (sort === "descending") {
+      bookings.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+    }
+  }, [bookings, sort]);
+
+  const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
+
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+
+    if (!validFileTypes.includes(file.type)) {
+      console.error("Invalid file type");
+      return;
+    }
+
+    // Example of how to handle file upload
+    // const form = new FormData();
+    // form.append("image", file);
+    // await mutate(form);
+  };
+
   const { mutate } = useMutation({
     mutationFn: async () => {
-      console.log(address);
-      console.log(username);
-      console.log("sending request to change data");
+      console.log("Sending request to update user data");
       return await userDetails(
         "/api/users/" + userId,
         "PATCH",
@@ -79,40 +107,15 @@ const UserProfile = () => {
       );
     },
     onSuccess: () => {
-      console.log("successful sending change request");
+      console.log("Successful update request");
       queryClient.invalidateQueries(["user"]);
-      console.log("data should be changed");
     },
   });
 
-  switch (sort) {
-    case "ascending":
-      bookings.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
-      break;
-    case "descending":
-      bookings.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
-  }
-
-  const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
-
-  const handleUpload = async (e) => {
-    console.log(e);
-    const file = e.target.files[0];
-
-    if (!validFileTypes.find((filetype) => filetype === file.type)) {
-      console.error(error.message);
-      return;
-    }
-
-    // const form = new FormData();
-    // form.append("image", file);
-    // await mutate(form);
-  };
-
   return (
     <>
-      {isFetching && <p>Loading...</p>}
-      {isSuccess && (
+      {isUserDataFetching && <p>Loading user data...</p>}
+      {isUserDataSuccess && (
         <>
           <NavBar />
           <Link to={"/services"}>Go Back</Link>
@@ -131,7 +134,7 @@ const UserProfile = () => {
                     onChange={handleUpload}
                   ></input>
                 </div>
-                <h3>{data.username}</h3>
+                <h3>{username}</h3>
                 <button
                   onClick={() => {
                     setUpdateInfo(!updateInfo);
@@ -140,7 +143,6 @@ const UserProfile = () => {
                   Update personal info
                 </button>
               </div>
-              <div></div>
             </div>
 
             <div className={styles.rightColumn}>
@@ -177,18 +179,16 @@ const UserProfile = () => {
                           />
                         )
                     )}
-                    {bookings.map(
-                      (booking) =>
-                        filteredBookings === "All" && (
-                          <BookingCard
-                            booking={booking}
-                            key={booking._id}
-                            bookingId={booking._id}
-                            accessToken={token}
-                            userId={userId}
-                          />
-                        )
-                    )}
+                    {filteredBookings === "All" &&
+                      bookings.map((booking) => (
+                        <BookingCard
+                          booking={booking}
+                          key={booking._id}
+                          bookingId={booking._id}
+                          accessToken={token}
+                          userId={userId}
+                        />
+                      ))}
                   </div>
                 </div>
               )}
@@ -200,7 +200,7 @@ const UserProfile = () => {
                   </div>
                   <div className={styles.info}>
                     <label>User Id</label>
-                    <div>{data._id}</div>
+                    <div>{userData._id}</div>
                     <div>
                       <label>Username</label>
                       <div>
@@ -232,9 +232,10 @@ const UserProfile = () => {
                       <button onClick={mutate}>Save</button>
                       <button
                         onClick={() => {
-                          setUpdateInfo(!updateInfo);
-                          setUsername(data.username);
-                          setAddress(data.address);
+                          setUpdateInfo(false);
+                          setUsername(userData.username);
+                          setAddress(userData.address);
+                          setEmail(userData.email);
                         }}
                       >
                         Cancel

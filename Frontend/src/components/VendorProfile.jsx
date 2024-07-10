@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import styles from "./VendorProfile.module.css";
 import CreateServiceModal from "./CreateServiceModal";
@@ -7,13 +7,7 @@ import Logout from "./Logout";
 
 const VendorProfilePage = () => {
   const [vendorProfile, setVendorProfile] = useState({});
-  const [serviceData, setServiceData] = useState({
-    name: "",
-    category: "",
-    description: "",
-    price: 0,
-    availability: [],
-  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
@@ -32,10 +26,6 @@ const VendorProfilePage = () => {
 
         if (cachedData) {
           setVendorProfile(cachedData);
-          setServiceData((prevData) => ({
-            ...prevData,
-            category: cachedData.category,
-          }));
           return;
         }
 
@@ -51,10 +41,16 @@ const VendorProfilePage = () => {
 
         setVendorProfile(response);
 
-        setServiceData((prevData) => ({
-          ...prevData,
-          category: response.category,
-        }));
+        if (response._id) {
+          const servicesResponse = await fetchData(
+            `/api/services/${response._id}`,
+            "GET"
+          );
+          setVendorProfile((prevProfile) => ({
+            ...prevProfile,
+            services: servicesResponse,
+          }));
+        }
       } catch (error) {
         console.error("Error fetching profile", error);
       }
@@ -65,54 +61,22 @@ const VendorProfilePage = () => {
     }
   }, [fetchData, queryClient, token, vendorProfile]);
 
-  const mutation = useMutation({
-    mutationFn: async (newService) => {
-      if (!token) {
-        throw new Error("No token found");
-      }
+  const handleLogout = () => {
+    console.log("Logout");
+  };
 
-      const response = await fetchData(
-        "/api/services/create",
-        "POST",
-        newService,
-        token
+  const handleServiceCreationSuccess = () => {
+    const fetchServices = async () => {
+      const servicesResponse = await fetchData(
+        `/api/services/${vendorProfile._id}`,
+        "GET"
       );
-      return response.data;
-    },
-    onSuccess: () => {
-      setServiceData({
-        name: "",
-        category: vendorProfile.category,
-        description: "",
-        price: 0,
-        availability: [],
-      });
-    },
-    onError: (error) => {
-      console.error("Error creating service:", error);
-    },
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setServiceData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleAvailabilityChange = (e) => {
-    const { value } = e.target;
-    const availabilityDates = value.split(",").map((date) => date.trim());
-    setServiceData((prevData) => ({
-      ...prevData,
-      availability: availabilityDates,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    mutation.mutate(serviceData);
+      setVendorProfile((prevProfile) => ({
+        ...prevProfile,
+        services: servicesResponse,
+      }));
+    };
+    fetchServices();
   };
 
   const handleEditProfile = () => {
@@ -129,14 +93,14 @@ const VendorProfilePage = () => {
     try {
       const response = await fetchData(
         "/api/vendor/edit",
-        "PUT",
-        { about: updatedProfile.about },
+        "PATCH",
+        { aboutUs: updatedProfile.aboutUs },
         token
       );
 
-      if (response && response.success) {
+      if (response && response.success === "ok") {
         setEditMode(false);
-        setVendorProfile({ ...vendorProfile, about: updatedProfile.about });
+        setVendorProfile({ ...vendorProfile, aboutUs: updatedProfile.aboutUs });
         console.log("Profile updated successfully");
       } else {
         throw new Error(response.message || "Failed to update");
@@ -185,7 +149,7 @@ const VendorProfilePage = () => {
             <div className={styles.infoLabel}>Category:</div>
             <div className={styles.infoText}>{vendorProfile.category}</div>
             <div className={styles.infoLabel}>About Us:</div>
-            <div className={styles.infoText}>{vendorProfile.about}</div>
+            <div className={styles.infoText}>{vendorProfile.aboutUs}</div>
             <button onClick={handleEditProfile}>Edit Profile</button>
           </div>
         ) : (
@@ -233,7 +197,7 @@ const VendorProfilePage = () => {
                 </div>
                 <div className={styles.servicePrice}>${service.price}</div>
                 <a
-                  href={`api/services/${service._id}`}
+                  href={`/services/${service._id}`}
                   className={styles.serviceLink}
                 >
                   View Service
@@ -258,5 +222,4 @@ const VendorProfilePage = () => {
     </div>
   );
 };
-
 export default VendorProfilePage;

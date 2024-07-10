@@ -10,6 +10,7 @@ const BookingCard = (props) => {
   const queryClient = useQueryClient();
   const [confirmCancel, setConfirmCancel] = useState(false);
   const token = localStorage.getItem("accessToken");
+  const [reviewModal, setReviewModal] = useState(false);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -57,7 +58,7 @@ const BookingCard = (props) => {
           </div>
 
           <button onClick={() => setConfirmCancel(true)}>Cancel Booking</button>
-          <button onClick={handleReviewClick}>Write Review</button>
+          {/* <button onClick={handleReviewClick}>Write Review</button> */}
         </div>
       )}
 
@@ -78,7 +79,6 @@ const BookingCard = (props) => {
 
       {reviewModal && (
         <ReviewModal
-          serviceId={props.booking.serviceId}
           onReviewCreated={handleReviewSubmit}
           onClose={() => setReviewModal(false)}
         />

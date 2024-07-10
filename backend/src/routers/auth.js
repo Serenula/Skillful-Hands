@@ -14,6 +14,7 @@ const {
 } = require("../validators/auth");
 const checkErrors = require("../validators/checkErrors");
 const { seedVendors } = require("../controllers/vendor");
+const { auth } = require("../middleware/auth");
 
 router.get("/all", getAll);
 router.put("/register", validateRegistration, checkErrors, register);

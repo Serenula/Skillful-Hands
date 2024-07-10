@@ -151,4 +151,5 @@ module.exports = {
   getServiceById,
   createService,
   deleteService,
+  getVendorServices,
 };

@@ -5,10 +5,12 @@ const {
   getServiceById,
   seedServices,
   deleteService,
+  getVendorServices,
 } = require("../controllers/service");
 const { createServiceValidation } = require("../validators/service");
 const checkErrors = require("../validators/checkErrors");
 const { auth } = require("../middleware/auth");
+const { getUserVendorProfile } = require("../controllers/auth");
 const router = express.Router();
 
 router.post("/seed", seedServices);
