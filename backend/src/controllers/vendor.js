@@ -12,8 +12,8 @@ const seedVendors = async (req, res) => {
         email: "vendor4@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 4",
         category: "Cleaning",
+        aboutUs: "Cleaning company",
       },
       {
         _id: "60d5ec49c45e2a001c8d2e25",
@@ -21,8 +21,8 @@ const seedVendors = async (req, res) => {
         email: "vendor5@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 5",
         category: "Aircon Servicing",
+        aboutUs: "Aircon company",
       },
       {
         _id: "60d5ec49c45e2a001c8d2e24",
@@ -30,8 +30,8 @@ const seedVendors = async (req, res) => {
         email: "vendor6@example.com",
         hash: await bcrypt.hash("password123", 12),
         role: "vendor",
-        address: "Vendor Address 6",
         category: "Plumbing",
+        aboutUs: "Plumbing company",
       },
     ]);
 
@@ -42,6 +42,28 @@ const seedVendors = async (req, res) => {
   }
 };
 
+const edit = async (req, res) => {
+  const { aboutUs } = req.body;
+  try {
+    const vendor = await Vendor.findById(req.user.id);
+
+    if (!vendor) {
+      return res
+        .status(404)
+        .json({ status: "Not Found", msg: "Vendor not found" });
+    }
+
+    vendor.aboutUs = aboutUs;
+    await vendor.save();
+
+    res.status(200).json({ status: "ok", msg: "Updated successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ status: "error", msg: "Server error" });
+  }
+};
+
 module.exports = {
   seedVendors,
+  edit,
 };

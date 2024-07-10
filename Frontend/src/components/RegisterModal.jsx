@@ -7,6 +7,10 @@ const RegisterModal = ({ onClose }) => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [category, setCategory] = useState("");
+  const [address, setAddress] = useState("");
+  const [aboutUs, setAboutUs] = useState("");
+  const [error, setError] = useState(null);
+  const fetchData = useFetch();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -78,6 +82,13 @@ const RegisterModal = ({ onClose }) => {
                 <option value="Pet Grooming">Pet Grooming</option>
                 <option value="Personal Training">Personal Training</option>
               </select>
+              <lable htmlFor="aboutUs">About Us:</lable>
+              <input
+                type="text"
+                value={aboutUs}
+                onChange={(e) => setAboutUs(e.target.value)}
+                required
+              />
             </div>
           )}
           <div className={styles.buttonContainer}>

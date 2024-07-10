@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styles from "./BookingCard.module.css";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
+import ReviewModal from "./ReviewModal";
+import { useParams } from "react-router-dom";
 
 const BookingCard = (props) => {
   const cancelBooking = useFetch();
@@ -23,6 +25,15 @@ const BookingCard = (props) => {
       setConfirmCancel(false);
     },
   });
+
+  const handleReviewClick = () => {
+    setReviewModal(true);
+  };
+
+  const handleReviewSubmit = () => {
+    setReviewModal(false);
+    queryClient.invalidateQueries(["services"]);
+  };
 
   return (
     <>
@@ -46,6 +57,7 @@ const BookingCard = (props) => {
           </div>
 
           <button onClick={() => setConfirmCancel(true)}>Cancel Booking</button>
+          <button onClick={handleReviewClick}>Write Review</button>
         </div>
       )}
 
@@ -62,6 +74,14 @@ const BookingCard = (props) => {
             </div>
           </div>
         </div>
+      )}
+
+      {reviewModal && (
+        <ReviewModal
+          serviceId={props.booking.serviceId}
+          onReviewCreated={handleReviewSubmit}
+          onClose={() => setReviewModal(false)}
+        />
       )}
     </>
   );

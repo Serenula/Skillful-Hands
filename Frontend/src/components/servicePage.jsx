@@ -37,7 +37,7 @@ const ServicePage = () => {
 
   const handleSearch = () => {
     const filtered = services.filter((service) =>
-      service.title.toLowerCase().includes(searchTerm.toLowerCase())
+      service.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredServices(filtered);
   };
@@ -59,9 +59,7 @@ const ServicePage = () => {
           <Link to={`/users/${userId}`} className={styles.link}>
             Profile
           </Link>
-          <a href="/" className={styles.link}>
-            Log out
-          </a>
+          <Logout onLogout={handleLogout} />
         </div>
       </nav>
       <div className={styles.hero}>
@@ -82,10 +80,12 @@ const ServicePage = () => {
       <div className={styles.serviceContainer}>
         {filteredServices.map((service) => (
           <div key={service._id} className={styles.serviceBox}>
-            <h3 className={styles.serviceTitle}>{service.title}</h3>
+            <h3 className={styles.serviceName}>{service.name}</h3>
             <p className={styles.serviceDescription}>{service.description}</p>
             <p className={styles.servicePrice}>Price: ${service.price}</p>
-            {/* link to dedicated service page */}
+            <p className={styles.serviceRating}>
+              Reviews: {service.reviews || "No ratings yet"}
+            </p>
             <Link
               to={`/services/${service._id}`}
               className={styles.serviceLink}

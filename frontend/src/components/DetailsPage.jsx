@@ -11,9 +11,15 @@ const DetailsPage = () => {
   const params = useParams();
   const [isBooking, setIsBooking] = useState(false);
 
+  console.log("Service ID:", params);
+
   const { data, isSuccess } = useQuery({
-    queryKey: ["details"],
-    queryFn: async () => await fetchData("/api/services/" + params.id),
+    queryKey: ["Service"],
+    queryFn: async () => {
+      const serviceLink = "/api/services/" + params.id;
+      console.log("Service Link:", serviceLink);
+      return await fetchData(serviceLink, "POST");
+    },
   });
 
   const handleBooking = () => {
@@ -24,7 +30,7 @@ const DetailsPage = () => {
     <div className={style2.page}>
       <NavBar />
 
-      {isSuccess && (
+      {isSuccess && data && (
         <>
           <Link to={"/services"} className={style2.back}>
             Go Back
@@ -34,21 +40,12 @@ const DetailsPage = () => {
               <div>
                 <h3>About Us</h3>
               </div>
-              <div>
-                {/* to be replaced with a vendor description */}
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </div>
+              <div>{data.vendor?.aboutUs}</div>
             </div>
 
             <div className={style2.booking}>
               <div>
-                <h3>{data.vendor.username}</h3>
+                <h3>{data.vendor?.username}</h3>
               </div>
             </div>
           </div>
@@ -56,9 +53,15 @@ const DetailsPage = () => {
           <div className={style2.service}>
             <div>
               <h3>Services</h3>
-              <div>{data.name}</div>
-              <div>{data.description}</div>
-              <div>${data.price}</div>
+              <div>{data.name || "No service name available"}</div>
+              <div>{data.description || "No description available"}</div>
+              <div>
+                {data.price !== undefined
+                  ? `$${data.price}`
+                  : "No price available"}
+              </div>
+              <h3>Reviews</h3>
+              <div>{data.reviews?.comments || "No service name available"}</div>
             </div>
             <div>
               <button className={style2.bookButton} onClick={handleBooking}>
@@ -67,7 +70,7 @@ const DetailsPage = () => {
             </div>
           </div>
 
-          {isBooking && (
+          {isBooking && data.vendor && (
             <Booking
               id={params.id}
               handleBooking={handleBooking}
