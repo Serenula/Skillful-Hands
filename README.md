@@ -1,6 +1,6 @@
 # Skillful Hands
 
-![Logo](/Frontend/Skilfull%20Hands.png)
+![Logo](</Frontend/Skilfull%20Hands%20(1).png>)
 
 ## Concept
 
@@ -66,8 +66,10 @@ Skillful Hands is a personal service platform aimed to pair freelancers with peo
 
 ### Planning
 
-![Service Page](/Frontend//Service%20Page.png)
-![Vendor Profile](/Frontend//Profile%20Page.png)
+<p align="center">
+  <img src="/Frontend/Service%20Page.png" alt="Service Page" width="45%" />
+  <img src="/Frontend/Profile%20Page.png" alt="Vendor Profile" width="45%" />
+</p>
 
 1. What we wanted to do as a group was to generally plan out the API endpoints and then split the work. Here are the original API endpoints:
    - User
