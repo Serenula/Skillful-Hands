@@ -1,5 +1,7 @@
 # Skillful Hands
 
+![Logo](/Frontend/Skilfull%20Hands.png)
+
 ## Concept
 
 When thinking about what to build, Xiu Min said she hopes for a service to help her clean her room, thus Skillful Hands was created!
@@ -63,6 +65,9 @@ Skillful Hands is a personal service platform aimed to pair freelancers with peo
 ## Creation Process
 
 ### Planning
+
+![Service Page](/Frontend//Service%20Page.png)
+![Vendor Profile](/Frontend//Profile%20Page.png)
 
 1. What we wanted to do as a group was to generally plan out the API endpoints and then split the work. Here are the original API endpoints:
    - User
