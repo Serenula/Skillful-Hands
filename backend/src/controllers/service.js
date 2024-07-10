@@ -52,6 +52,31 @@ const seedServices = async (req, res) => {
     res.status(400).json({ status: "error", msg: "Seeding error" });
   }
 };
+const createService = async (req, res) => {
+  const { name, description, price, availability } = req.body;
+  const vendorId = req.userVendorId;
+  try {
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor) {
+      return res.status(404).json({ msg: "Vendor not found" });
+    }
+    const category = vendor.category;
+
+    const newService = new Service({
+      name,
+      category,
+      description,
+      price,
+      vendor: vendorId,
+      availability,
+    });
+    await Service.create(newService);
+    res.json({ status: "ok", msg: "Service saved" });
+  } catch (error) {
+    console.error(error.message);
+    res.json({ status: "error", msg: "Error saving service" });
+  }
+};
 
 const getAllServices = async (req, res) => {
   try {
@@ -87,32 +112,6 @@ const getVendorServices = async (req, res) => {
   } catch (error) {
     console.error("Error", error.message);
     res.status(500).json({ status: "error", msg: "internal server error" });
-  }
-};
-
-const createService = async (req, res) => {
-  const { name, description, price, availability } = req.body;
-  const vendorId = req.userVendorId;
-  try {
-    const vendor = await Vendor.findById(vendorId);
-    if (!vendor) {
-      return res.status(404).json({ msg: "Vendor not found" });
-    }
-    const category = vendor.category;
-
-    const newService = new Service({
-      name,
-      category,
-      description,
-      price,
-      vendor: vendorId,
-      availability,
-    });
-    await Service.create(newService);
-    res.json({ status: "ok", msg: "Service saved" });
-  } catch (error) {
-    console.error(error.message);
-    res.json({ status: "error", msg: "Error saving service" });
   }
 };
 

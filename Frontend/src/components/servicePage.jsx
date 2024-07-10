@@ -89,7 +89,7 @@ const ServicePage = () => {
             <p className={styles.serviceDescription}>{service.description}</p>
             <p className={styles.servicePrice}>Price: ${service.price}</p>
             <p className={styles.serviceRating}>
-              Rating: {service.averageRating || "No ratings yet"}
+              Reviews: {service.reviews || "No ratings yet"}
             </p>
             <Link
               to={`/services/${service._id}`}

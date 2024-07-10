@@ -30,7 +30,16 @@ const serviceSchema = new mongoose.Schema(
       ref: "Vendor",
       required: true,
     },
-    availability: [{ type: Date, required: true }],
+    availability: [
+      {
+        type: Date,
+        required: true,
+      },
+    ],
+    reviews: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Review",
+    },
   },
   {
     timestamps: true,

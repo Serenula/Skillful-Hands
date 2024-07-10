@@ -60,6 +60,8 @@ const DetailsPage = () => {
                   ? `$${data.price}`
                   : "No price available"}
               </div>
+              <h3>Reviews</h3>
+              <div>{data.reviews?.comments || "No service name available"}</div>
             </div>
             <div>
               <button className={style2.bookButton} onClick={handleBooking}>

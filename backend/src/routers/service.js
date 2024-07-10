@@ -1,9 +1,9 @@
 const express = require("express");
 const {
+  createService,
   getAllServices,
   getServiceById,
   seedServices,
-  createService,
   deleteService,
   getVendorServices,
 } = require("../controllers/service");
@@ -26,7 +26,6 @@ router.delete(
 );
 router.get("/", getAllServices);
 router.get("/:vendorId", getVendorServices);
-router.post("/:serviceId", getServiceById);
 router.post(
   "/create",
   createServiceValidation,
@@ -40,5 +39,7 @@ router.post(
   },
   createService
 );
+
+router.post("/:serviceId", getServiceById);
 
 module.exports = router;

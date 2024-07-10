@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import useFetch from "../hooks/useFetch";
 import styles from "./ReviewModal.module.css";
 
-const ReviewModal = ({ serviceId, onReviewCreated }) => {
+const ReviewModal = ({ serviceId, onclose, onReviewCreated }) => {
   const [rating, setRating] = useState(1);
   const [comment, setComment] = useState("");
   const fetchData = useFetch();
@@ -25,6 +25,7 @@ const ReviewModal = ({ serviceId, onReviewCreated }) => {
       );
       console.log("Review created:", response);
       onReviewCreated();
+      onclose();
     } catch (error) {
       console.error("Error creating review:", error);
     }
