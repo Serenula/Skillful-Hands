@@ -21,11 +21,15 @@ const UserProfile = () => {
   const [filteredBookings, setFilteredBookings] = useState("All");
   const [sort, setSort] = useState("ascending");
 
-  //fetch user data
-  const { data, isSuccess, isFetching } = useQuery({
+  // Fetch user data
+  const {
+    data: userData,
+    isSuccess: isUserDataSuccess,
+    isFetching: isUserDataFetching,
+  } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      console.log("fetching data");
+      console.log("Fetching user data");
       return await userDetails(
         "/api/users/" + userId,
         undefined,
@@ -35,11 +39,11 @@ const UserProfile = () => {
     },
   });
 
-  //fetch bookings data - yes it's kinda repeated but the user schema is not manipulated only the booking schema is.
-  const getBookingsByUser = useQuery({
+  // Fetch bookings data
+  const { data: bookingsData, isSuccess: isBookingSuccess } = useQuery({
     queryKey: ["booking"],
     queryFn: async () => {
-      console.log("fetching data");
+      console.log("Fetching bookings data");
       return await userDetails(
         "/api/users/booking/" + userId,
         undefined,
@@ -49,17 +53,19 @@ const UserProfile = () => {
     },
   });
 
-  //render the user info when data is fetched.
   useEffect(() => {
-    console.log("no data yet");
-    if (data) {
-      console.log("have data - reset states");
-      setUsername(data.username);
-      setAddress(data.address);
-      setBookings(getBookingsByUser.data);
-      setEmail(data.email);
+    if (isUserDataSuccess && userData) {
+      setUsername(userData.username);
+      setAddress(userData.address);
+      setEmail(userData.email);
     }
-  }, [data]);
+  }, [userData, isUserDataSuccess]);
+
+  useEffect(() => {
+    if (isBookingSuccess && bookingsData) {
+      setBookings(bookingsData);
+    }
+  }, [bookingsData, isBookingSuccess]);
 
   // Sort bookings based on selected order
   const sorting = (value) => {
@@ -98,8 +104,8 @@ const UserProfile = () => {
 
   return (
     <>
-      {isFetching && <p>Loading...</p>}
-      {isSuccess && (
+      {isUserDataFetching && <p>Loading user data...</p>}
+      {isUserDataSuccess && (
         <>
           <NavBar />
           <Link to={"/services"}>Go Back</Link>
