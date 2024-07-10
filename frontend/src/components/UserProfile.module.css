@@ -1,0 +1,69 @@
+.page {
+  display: grid;
+  width: 100vw;
+  min-height: 100vh;
+  grid-template-columns: 2fr 4fr;
+  color: black;
+}
+
+.profile {
+  display: grid;
+  display: grid;
+  grid-template-rows: 3fr 3fr;
+}
+
+.rightColumn {
+  margin: 1em;
+}
+
+.user {
+  margin: 1em;
+  background-color: white;
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  border: none;
+  background-color: bisque;
+  border-radius: 1em;
+  padding: 0.2em 0.5em 0.2em 0.5em;
+}
+
+.bookings {
+  display: grid;
+  grid-template-rows: 1fr 9fr;
+}
+
+.dropdown {
+  display: flex;
+}
+
+label {
+  font-weight: 700;
+}
+
+.info {
+  background-color: white;
+  margin: 1em;
+  padding: 1em;
+  border-radius: 1em;
+}
+
+.sortBy {
+  background-color: white;
+  border-radius: 1em;
+  padding: 0.5em 1em 0.5em 1em;
+  margin-left: 1em;
+  color: black;
+}
+
+.uploadBtn {
+  background-color: black;
+  color: white;
+  padding: 0.5em;
+  border-radius: 1em;
+}
