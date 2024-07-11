@@ -62,6 +62,14 @@ Skillful Hands is a personal service platform aimed to pair freelancers with peo
 4. CSS
 5. Tanstack
 
+## .env
+
+1. PORT
+2. DATABASE
+3. ACCESS_SECRET
+4. REFRESH_SECRET
+5. VITE_SERVER
+
 ## Creation Process
 
 ### Planning
