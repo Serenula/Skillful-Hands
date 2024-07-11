@@ -181,7 +181,7 @@ const UserProfile = () => {
                   </div>
                   <div className={styles.info}>
                     <label>User Id</label>
-                    <div>{data._id}</div>
+                    <div>{userData._id}</div>
                     <div>
                       <label>Username</label>
                       <div>
