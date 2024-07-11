@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import styles from "./VendorProfile.module.css";
 import CreateServiceModal from "./CreateServiceModal";
+import { jwtDecode } from "jwt-decode";
 import Logout from "./Logout";
 
 const VendorProfilePage = () => {
@@ -11,6 +12,7 @@ const VendorProfilePage = () => {
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
+  const decodedToken = jwtDecode(token);
   const [editMode, setEditMode] = useState(false);
   const [updatedProfile, setUpdatedProfile] = useState({});
 
