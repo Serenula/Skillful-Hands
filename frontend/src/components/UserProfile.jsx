@@ -54,18 +54,18 @@ const UserProfile = () => {
   });
 
   useEffect(() => {
-    if (isUserDataSuccess && userData) {
+    if (userData) {
       setUsername(userData.username);
       setAddress(userData.address);
       setEmail(userData.email);
     }
-  }, [userData, isUserDataSuccess]);
+  }, [userData]);
 
   useEffect(() => {
-    if (isBookingSuccess && bookingsData) {
+    if (bookingsData) {
       setBookings(bookingsData);
     }
-  }, [bookingsData, isBookingSuccess]);
+  }, [bookingsData]);
 
   // Sort bookings based on selected order
   const sorting = (value) => {
@@ -81,8 +81,6 @@ const UserProfile = () => {
   //making changes to user's info
   const { mutate } = useMutation({
     mutationFn: async () => {
-      console.log(address);
-      console.log(username);
       console.log("sending request to change data");
       return await userDetails(
         "/api/users/" + userId,
@@ -105,14 +103,14 @@ const UserProfile = () => {
   return (
     <>
       {isUserDataFetching && <p>Loading user data...</p>}
-      {isUserDataSuccess && (
+      {isUserDataSuccess & isBookingSuccess && (
         <>
           <NavBar />
           <Link to={"/services"}>Go Back</Link>
           <div className={styles.page}>
             <div className={styles.profile}>
               <div className={styles.user}>
-                <h3>{username}</h3>
+                <h3>{userData.username}</h3>
                 <button
                   onClick={() => {
                     setUpdateInfo(!updateInfo);
@@ -213,9 +211,10 @@ const UserProfile = () => {
                       <button onClick={mutate}>Save</button>
                       <button
                         onClick={() => {
-                          setUpdateInfo(!updateInfo);
-                          setUsername(data.username);
-                          setAddress(data.address);
+                          setUpdateInfo(false);
+                          setUsername(userData.username);
+                          setAddress(userData.address);
+                          setEmail(userData.email);
                         }}
                       >
                         Cancel
