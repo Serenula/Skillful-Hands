@@ -119,6 +119,7 @@ Skillful Hands is a personal service platform aimed to pair freelancers with peo
 4. Designer: Vernon
 5. Database Manager: Xiu Min
 6. Validation Master: Xiu Min
+7. Goal Stretch Advocate : Xiu Min
 
 ## Sharings
 
@@ -126,13 +127,19 @@ Skillful Hands is a personal service platform aimed to pair freelancers with peo
 
 - **Vernon**:
   - I hate frontend now.
+- **Xiu Min**:
+  - I love frontend now.
 
 ### Biggest Challenge
 
 - **Vernon**:
   - Merging things made me realize that my planning and distribution of work were bad.
+- **Xium Min**:
+  - The issue was the lack of deep thinking during the planning phase. We should have drawn out the entire schema first together to ensure that our parts don't overlap.
 
 ### Key Learnings
 
 - **Vernon**:
   - How to better plan delegation.
+- **Xiu Min**:
+  - Database design and schemas are central.
