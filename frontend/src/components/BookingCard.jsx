@@ -70,7 +70,7 @@ const BookingCard = (props) => {
           </div>
 
           <button onClick={() => setConfirmCancel(true)}>Cancel Booking</button>
-          <button onClick={() => setReviewModal(true)}>Write Review</button>
+          {/* <button onClick={() => setReviewModal(true)}>Write Review</button> */}
         </div>
       )}
 
