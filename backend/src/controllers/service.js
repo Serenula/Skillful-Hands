@@ -52,31 +52,6 @@ const seedServices = async (req, res) => {
     res.status(400).json({ status: "error", msg: "Seeding error" });
   }
 };
-
-const getAllServices = async (req, res) => {
-  try {
-    const services = await Service.find().populate("vendor", "username");
-    res.json(services);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getServiceById = async (req, res) => {
-  try {
-    const service = await Service.findById(req.params.id).populate(
-      "vendor",
-      "username"
-    );
-    if (!service) {
-      return res.status(404).json({ message: "Service not found" });
-    }
-    res.json(service);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const createService = async (req, res) => {
   const { name, description, price, availability } = req.body;
   const vendorId = req.userVendorId;
@@ -100,6 +75,42 @@ const createService = async (req, res) => {
   } catch (error) {
     console.error(error.message);
     res.json({ status: "error", msg: "Error saving service" });
+  }
+};
+
+const getAllServices = async (req, res) => {
+  try {
+    const services = await Service.find().populate("vendor", "username");
+    res.json(services);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getServiceById = async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.serviceId)
+      .populate("vendor", "username aboutUs")
+      .populate("reviews");
+    console.log(service);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+    res.json(service);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getVendorServices = async (req, res) => {
+  const { vendorId } = req.params;
+  try {
+    const services = await Service.find({ vendor: vendorId });
+
+    res.status(200).json(services);
+  } catch (error) {
+    console.error("Error", error.message);
+    res.status(500).json({ status: "error", msg: "internal server error" });
   }
 };
 
@@ -139,4 +150,5 @@ module.exports = {
   getServiceById,
   createService,
   deleteService,
+  getVendorServices,
 };

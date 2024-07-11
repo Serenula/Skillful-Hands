@@ -4,6 +4,7 @@ import useFetch from "../hooks/useFetch";
 import styles from "./ServicePage.module.css";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import Logout from "./Logout";
 
 const ServicePage = () => {
   const fetchData = useFetch();
@@ -37,13 +38,17 @@ const ServicePage = () => {
 
   const handleSearch = () => {
     const filtered = services.filter((service) =>
-      service.title.toLowerCase().includes(searchTerm.toLowerCase())
+      service.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredServices(filtered);
   };
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleLogout = () => {
+    console.log("Logout complete");
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -53,15 +58,17 @@ const ServicePage = () => {
     <div>
       <nav className={styles.navbar}>
         <div className={styles.logoLink}>
-          <img src="Skilfull Hands.png" alt="Logo" className={styles.logo} />
+          <img
+            src="Skilfull Hands (1).png"
+            alt="Logo"
+            className={styles.logo}
+          />
         </div>
         <div className={styles.navLinks}>
           <Link to={`/users/${userId}`} className={styles.link}>
             Profile
           </Link>
-          <a href="/" className={styles.link}>
-            Log out
-          </a>
+          <Logout onLogout={handleLogout} />
         </div>
       </nav>
       <div className={styles.hero}>
@@ -82,10 +89,12 @@ const ServicePage = () => {
       <div className={styles.serviceContainer}>
         {filteredServices.map((service) => (
           <div key={service._id} className={styles.serviceBox}>
-            <h3 className={styles.serviceTitle}>{service.title}</h3>
+            <h3 className={styles.serviceName}>{service.name}</h3>
             <p className={styles.serviceDescription}>{service.description}</p>
             <p className={styles.servicePrice}>Price: ${service.price}</p>
-            {/* link to dedicated service page */}
+            {/* <p className={styles.serviceRating}>
+              Reviews: {service.reviews || "No ratings yet"}
+            </p> */}
             <Link
               to={`/services/${service._id}`}
               className={styles.serviceLink}

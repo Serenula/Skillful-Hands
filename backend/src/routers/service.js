@@ -1,14 +1,16 @@
 const express = require("express");
 const {
+  createService,
   getAllServices,
   getServiceById,
   seedServices,
-  createService,
   deleteService,
+  getVendorServices,
 } = require("../controllers/service");
 const { createServiceValidation } = require("../validators/service");
 const checkErrors = require("../validators/checkErrors");
 const { auth } = require("../middleware/auth");
+const { getUserVendorProfile } = require("../controllers/auth");
 const router = express.Router();
 
 router.post("/seed", seedServices);
@@ -24,7 +26,7 @@ router.delete(
   deleteService
 );
 router.get("/", getAllServices);
-router.get("/:id", getServiceById);
+router.get("/:vendorId", getVendorServices);
 router.post(
   "/create",
   createServiceValidation,
@@ -38,5 +40,7 @@ router.post(
   },
   createService
 );
+
+router.post("/:serviceId", getServiceById);
 
 module.exports = router;

@@ -17,7 +17,11 @@ const Homepage = () => {
     <div>
       <nav className={styles.navbar}>
         <NavLink to="/" className={styles.logoLink}>
-          <img src="Skilfull Hands.png" alt="Logo" className={styles.logo} />
+          <img
+            src="Skilfull Hands (1).png"
+            alt="Logo"
+            className={styles.logo}
+          />
         </NavLink>
         <div className={styles.navLinks}>
           <span className={styles.link} onClick={openLoginModal}>
@@ -30,6 +34,14 @@ const Homepage = () => {
       </nav>
       <div className={styles.hero}>
         <img src="heroimage.jpg" alt="Hero" className={styles.heroImage} />
+        <div className={styles.heroOverlay}></div>
+        <div className={styles.heroText}>
+          Freelance
+          <br />
+          Professional
+          <br />
+          Services
+        </div>
       </div>
       {showLogin && <LoginModal onClose={closeLoginModal} />}
       {showRegister && <RegisterModal onClose={closeRegisterModal} />}

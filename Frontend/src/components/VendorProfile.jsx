@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
+import styles from "./VendorProfile.module.css";
+import CreateServiceModal from "./CreateServiceModal";
 import { jwtDecode } from "jwt-decode";
+import Logout from "./Logout";
 
 const VendorProfilePage = () => {
   const [vendorProfile, setVendorProfile] = useState({});
-  const [serviceData, setServiceData] = useState({
-    name: "",
-    category: "",
-    description: "",
-    price: 0,
-    availability: [],
-  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const fetchData = useFetch();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token); // Decode token once
+  const decodedToken = jwtDecode(token);
+  const [editMode, setEditMode] = useState(false);
+  const [updatedProfile, setUpdatedProfile] = useState({});
 
   useEffect(() => {
     const fetchVendorProfile = async () => {
@@ -29,10 +28,6 @@ const VendorProfilePage = () => {
 
         if (cachedData) {
           setVendorProfile(cachedData);
-          setServiceData((prevData) => ({
-            ...prevData,
-            category: cachedData.category,
-          }));
           return;
         }
 
@@ -48,10 +43,16 @@ const VendorProfilePage = () => {
 
         setVendorProfile(response);
 
-        setServiceData((prevData) => ({
-          ...prevData,
-          category: response.category,
-        }));
+        if (response._id) {
+          const servicesResponse = await fetchData(
+            `/api/services/${response._id}`,
+            "GET"
+          );
+          setVendorProfile((prevProfile) => ({
+            ...prevProfile,
+            services: servicesResponse,
+          }));
+        }
       } catch (error) {
         console.error("Error fetching profile", error);
       }
@@ -62,117 +63,169 @@ const VendorProfilePage = () => {
     }
   }, [fetchData, queryClient, token, vendorProfile]);
 
-  const mutation = useMutation({
-    mutationFn: async (newService) => {
-      if (!token) {
-        throw new Error("No token found");
-      }
+  const handleLogout = () => {
+    console.log("Logout");
+  };
 
+  const handleServiceCreationSuccess = () => {
+    const fetchServices = async () => {
+      const servicesResponse = await fetchData(
+        `/api/services/${vendorProfile._id}`,
+        "GET"
+      );
+      setVendorProfile((prevProfile) => ({
+        ...prevProfile,
+        services: servicesResponse,
+      }));
+    };
+    fetchServices();
+  };
+
+  const handleEditProfile = () => {
+    setEditMode(true);
+    setUpdatedProfile(vendorProfile);
+  };
+
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    setUpdatedProfile({});
+  };
+
+  const handleSaveProfile = async () => {
+    try {
       const response = await fetchData(
-        "/api/services/create",
-        "POST",
-        newService,
+        "/api/vendor/edit",
+        "PATCH",
+        { aboutUs: updatedProfile.aboutUs },
         token
       );
-      return response.data;
-    },
-    onSuccess: () => {
-      setServiceData({
-        name: "",
-        category: vendorProfile.category,
-        description: "",
-        price: 0,
-        availability: [],
-      });
-    },
-    onError: (error) => {
-      console.error("Error creating service:", error);
-    },
-  });
 
+      if (response && response.success === "ok") {
+        setEditMode(false);
+        setVendorProfile({ ...vendorProfile, aboutUs: updatedProfile.aboutUs });
+        console.log("Profile updated successfully");
+      } else {
+        throw new Error(response.message || "Failed to update");
+      }
+    } catch (error) {
+      console.error("Error updating profile", error);
+    }
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setServiceData((prevData) => ({
-      ...prevData,
+    setUpdatedProfile((prevProfile) => ({
+      ...prevProfile,
       [name]: value,
     }));
   };
 
-  const handleAvailabilityChange = (e) => {
-    const { value } = e.target;
-    const availabilityDates = value.split(",").map((date) => date.trim());
-    setServiceData((prevData) => ({
-      ...prevData,
-      availability: availabilityDates,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    mutation.mutate(serviceData);
-  };
-
   return (
     <div>
-      <h2>Vendor Profile</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Service Name:
-          <input
-            type="text"
-            name="name"
-            value={serviceData.name}
-            onChange={handleInputChange}
-            required
+      <nav className={styles.navbar}>
+        <div className={styles.logoLink}>
+          <img
+            src="Skilfull Hands (1).png"
+            alt="Logo"
+            className={styles.logo}
           />
-        </label>
-        <label>
-          Category:
-          <input
-            type="text"
-            name="category"
-            value={serviceData.category}
-            onChange={handleInputChange}
-            disabled
-            required
-          />
-        </label>
-        <label>
-          Description:
-          <textarea
-            name="description"
-            value={serviceData.description}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
-        <label>
-          Price:
-          <input
-            type="number"
-            name="price"
-            value={serviceData.price}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
-        <label>
-          Availability (comma-separated dates):
-          <input
-            type="date"
-            name="availability"
-            value={serviceData.availability.join(", ")}
-            onChange={handleAvailabilityChange}
-            required
-          />
-        </label>
-        <button type="submit" disabled={mutation.isLoading}>
-          {mutation.isLoading ? "Creating..." : "Create Service"}
-        </button>
-        {mutation.isError && <div>Error: {mutation.error.message}</div>}
-      </form>
+        </div>
+        <div className={styles.navLinks}>
+          <a href="/profile" className={styles.link}>
+            Profile
+          </a>
+          <Logout onLogout={handleLogout} />
+        </div>
+      </nav>
+
+      <div className={styles.hero}>
+        <img src="heroimage.jpg" alt="Hero" className={styles.heroImage} />
+        <img
+          src={vendorProfile.profilePicture || "vendorprofilepic.jpg"}
+          alt="Profile"
+          className={styles.profilePicture}
+        />
+      </div>
+
+      <div className={styles.profileContainer}>
+        {!editMode ? (
+          <div className={styles.profileInfo}>
+            <div className={styles.infoText}>{vendorProfile.name}</div>
+            <div className={styles.infoLabel}>Username:</div>
+            <div className={styles.infoText}>{vendorProfile.username}</div>
+            <div className={styles.infoLabel}>Category:</div>
+            <div className={styles.infoText}>{vendorProfile.category}</div>
+            <div className={styles.infoLabel}>About Us:</div>
+            <div className={styles.infoText}>{vendorProfile.aboutUs}</div>
+            <button onClick={handleEditProfile}>Edit Profile</button>
+          </div>
+        ) : (
+          <div className={styles.profileEdit}>
+            <h2>Edit Profile</h2>
+            <label htmlFor="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={updatedProfile.username}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="category">Category:</label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              value={updatedProfile.category}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="aboutUs">About Us:</label>
+            <textarea
+              id="aboutUs"
+              name="aboutUs"
+              value={updatedProfile.aboutUs}
+              onChange={handleInputChange}
+              required
+            />
+            <div className={styles.buttonContainer}>
+              <button onClick={handleSaveProfile}>Save</button>
+              <button onClick={handleCancelEdit}>Cancel</button>
+            </div>
+          </div>
+        )}
+        <div className={styles.servicesContainer}>
+          {vendorProfile.services &&
+            vendorProfile.services.map((service) => (
+              <div key={service._id} className={styles.serviceBox}>
+                <div className={styles.serviceTitle}>{service.name}</div>
+                <div className={styles.serviceDescription}>
+                  {service.description}
+                </div>
+                <div className={styles.servicePrice}>${service.price}</div>
+                <a
+                  href={`/services/${service._id}`}
+                  className={styles.serviceLink}
+                >
+                  View Service
+                </a>
+              </div>
+            ))}
+          <div
+            className={styles.createServiceBox}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Create New Service
+          </div>
+        </div>
+      </div>
+
+      <CreateServiceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        vendorCategory={vendorProfile.category}
+        onSuccess={handleServiceCreationSuccess}
+      />
     </div>
   );
 };
-
 export default VendorProfilePage;
