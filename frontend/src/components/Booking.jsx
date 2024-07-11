@@ -17,15 +17,14 @@ const Booking = (props) => {
   const { mutate } = useMutation({
     mutationFn: async () =>
       await createBooking(
-        "/api/users/booking/" + userId,
+        `/api/users/booking/${userId}`,
         "PUT",
         {
           title: props.title,
           vendor: props.vendor,
           price: props.price,
           date,
-          user: userId,
-          service: props.serviceId,
+          serviceId: props.serviceId,
         },
         token
       ),

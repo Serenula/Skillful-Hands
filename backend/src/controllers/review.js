@@ -18,6 +18,9 @@ const createReview = async (req, res) => {
       comment,
     });
 
+    service.reviews.push(newReview._id);
+    await service.save();
+
     res
       .status(201)
       .json({ message: "Review created successfully", review: newReview });

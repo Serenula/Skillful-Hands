@@ -10,7 +10,7 @@ const NavBar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.logoLink}>
-        <img src="/Skilfull Hands.png" alt="Logo" className={styles.logo} />
+        <img src="/Skilfull Hands (1).png" alt="Logo" className={styles.logo} />
       </div>
       <div className={styles.navLinks}>
         <Link to={`/users/${userId}`} className={styles.link}>

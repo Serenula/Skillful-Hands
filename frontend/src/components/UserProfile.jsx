@@ -155,21 +155,21 @@ const UserProfile = () => {
                             bookingId={booking._id}
                             accessToken={token}
                             userId={userId}
+                            serviceId={booking.service}
                           />
                         )
                     )}
-                    {bookings.map(
-                      (booking) =>
-                        filteredBookings === "All" && (
-                          <BookingCard
-                            booking={booking}
-                            key={booking._id}
-                            bookingId={booking._id}
-                            accessToken={token}
-                            userId={userId}
-                          />
-                        )
-                    )}
+                    {filteredBookings === "All" &&
+                      bookings.map((booking) => (
+                        <BookingCard
+                          booking={booking}
+                          key={booking._id}
+                          bookingId={booking._id}
+                          accessToken={token}
+                          userId={userId}
+                          serviceId={booking.service}
+                        />
+                      ))}
                   </div>
                 </div>
               )}

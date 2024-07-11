@@ -121,7 +121,11 @@ const VendorProfilePage = () => {
     <div>
       <nav className={styles.navbar}>
         <div className={styles.logoLink}>
-          <img src="Skilfull Hands.png" alt="Logo" className={styles.logo} />
+          <img
+            src="Skilfull Hands (1).png"
+            alt="Logo"
+            className={styles.logo}
+          />
         </div>
         <div className={styles.navLinks}>
           <a href="/profile" className={styles.link}>
